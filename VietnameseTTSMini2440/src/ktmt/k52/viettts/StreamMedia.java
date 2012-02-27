@@ -9,11 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,8 +26,9 @@ public class StreamMedia {
 	 private static final int INTIAL_KB_BUFFER =  96*10/8;//assume 96kbps*10secs/8bits per byte
 
 		private TextView textStreamed;
-		
-		
+		private ImageButton btSumit;
+		private ArrayList<String> arrayWork;
+		private ArrayAdapter<String> arrayAdapter;
 		
 		
 		//  Track for display by progressBar
@@ -44,11 +48,13 @@ public class StreamMedia {
 		
 		private int counter = 0;
 		
-	 	public StreamMedia(Context  context,TextView textStreamed) 
+	 	public StreamMedia(Context  context,TextView textStreamed,ArrayList<String> listArrayWork,ArrayAdapter<String> listArrayAdapter,ImageButton mybtSubmit) 
 	 	{
 	 		this.context = context;
 			this.textStreamed = textStreamed;
-			
+			this.arrayWork=listArrayWork;
+			this.arrayAdapter = listArrayAdapter;
+			this.btSumit = mybtSubmit;
 			
 		}
 		
@@ -91,7 +97,7 @@ public class StreamMedia {
 	        	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
 	        }
 	        
-			downloadingMediaFile = new File(context.getCacheDir(),mediaName);
+			downloadingMediaFile = new File(Environment.getExternalStorageDirectory()+"/cache",mediaName);
 			
 			// Just in case a prior deletion failed because our code crashed or something, we also delete any previously 
 			// downloaded file to ensure we start fresh.  If you use this code, always delete 
@@ -165,7 +171,7 @@ public class StreamMedia {
 	    
 	    private void startMediaPlayer() {
 	        try {   
-	        	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
+	        	File bufferedFile = new File(Environment.getExternalStorageDirectory()+"/cache","playingMedia" + (counter++) + ".dat");
 	        	
 	        	// We double buffer the data to avoid potential read/write errors that could happen if the 
 	        	// download thread attempted to write at the same time the MediaPlayer was trying to read.
@@ -182,6 +188,7 @@ public class StreamMedia {
 	        	
 	    		// We have pre-loaded enough content and started the MediaPlayer so update the buttons & progress meters.
 		    	mediaPlayer.start();
+		    	btSumit.setEnabled(false);
 				
 	        } catch (IOException e) {
 	        	Log.e(getClass().getName(), "Error initializing the MediaPlayer.", e);
@@ -221,8 +228,8 @@ public class StreamMedia {
 		    	int curPosition = mediaPlayer.getCurrentPosition();
 		    	
 		    	// Copy the currently downloaded content to a new buffered File.  Store the old File for deleting later. 
-		    	File oldBufferedFile = new File(context.getCacheDir(),"playingMedia" + counter + ".dat");
-		    	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
+		    	File oldBufferedFile = new File(Environment.getExternalStorageDirectory()+"/cache","playingMedia" + counter + ".dat");
+		    	File bufferedFile = new File(Environment.getExternalStorageDirectory()+"/cache","playingMedia" + (counter++) + ".dat");
 
 		    	//  This may be the last buffered File so ask that it be delete on exit.  If it's already deleted, then this won't mean anything.  If you want to 
 		    	// keep and track fully downloaded files for later use, write caching code and please send me a copy.
@@ -270,8 +277,12 @@ public class StreamMedia {
 	   	        	transferBufferToMediaPlayer();
 
 	   	        	// Delete the downloaded File as it's now been transferred to the currently playing buffer file.
-	   	        	downloadingMediaFile.delete();
+	   	        	//downloadingMediaFile.delete();
 		        	textStreamed.setText(("Audio full loaded: " + totalKbRead + " Kb read"));
+		        	
+		        	btSumit.setEnabled(true);
+		        	arrayWork.add(0,downloadingMediaFile.getAbsolutePath());
+		        	arrayAdapter.notifyDataSetChanged();
 		        }
 		    };
 		    handler.post(updater);
