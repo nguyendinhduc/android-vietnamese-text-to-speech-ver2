@@ -93,11 +93,13 @@
         android:orientation="horizontal"
         >
         <ListView
-            android:id="@+id/list"
+            android:id="@+id/listfile"
             android:layout_width="fill_parent"
             android:layout_height="70dp"
             android:background="@color/background_color"
             android:scrollbars="vertical"
+            android:layout_gravity="top"
+            
             />
     </LinearLayout>
     
@@ -108,7 +110,7 @@
         android:orientation="horizontal"  
         >
         <SeekBar
-            android:id="@+id/Loading_bar"
+            android:id="@+id/seek_bar"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             />
