@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -33,7 +35,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	/** Called when the activity is first created. */
 
 	private EditText inputText;
-	private ImageButton btSubmit, btChoose, btPlay, btStop, btExit;
+	private ImageButton btSubmit, btChoose, btPlay, btStop, btExit,btClear,btPause;
 	private ListView listText;
 	private CheckBox cbText;
 	private TextView status;
@@ -125,6 +127,43 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 			}
 		});
+		
+		
+		//nut clear
+		
+		btClear.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				inputText.setText("");
+			}
+		});
+		
+		//checkbox
+		cbText.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(buttonView==cbText)
+				{
+					if(isChecked)
+					{
+						btChoose.setEnabled(false);
+						inputText.setClickable(true);
+						inputText.setFocusable(true);
+
+					}else
+					{
+						btChoose.setEnabled(true);
+						inputText.setClickable(false);
+						inputText.setFocusable(false);
+					}
+						
+				}
+				
+			}
+		});
+		
 
 	}
 
@@ -132,12 +171,16 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		inputText = (EditText) findViewById(R.id.Input);
 		btSubmit = (ImageButton) findViewById(R.id.submit);
 		btChoose = (ImageButton) findViewById(R.id.Choose);
+		btChoose.setEnabled(false);
 		btPlay = (ImageButton) findViewById(R.id.play);
 		btStop = (ImageButton) findViewById(R.id.stop);
 		btExit = (ImageButton) findViewById(R.id.exit);
-
+		btClear = (ImageButton)findViewById(R.id.clearInput);
+		btPause =(ImageButton)findViewById(R.id.pause);
+		
 		listText = (ListView) findViewById(R.id.list);
 		cbText = (CheckBox) findViewById(R.id.Get_text);
+		cbText.setChecked(true);
 		status = (TextView) findViewById(R.id.text_kb_streamed);
 
 		audioStreamer = new StreamMedia(this, status, btPlay, btSubmit);
