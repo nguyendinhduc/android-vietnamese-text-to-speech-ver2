@@ -24,7 +24,6 @@ public class StreamMedia {
 
 		private TextView textStreamed;
 		
-		private ImageButton playButton;
 		
 		
 		
@@ -45,11 +44,11 @@ public class StreamMedia {
 		
 		private int counter = 0;
 		
-	 	public StreamMedia(Context  context,TextView textStreamed, ImageButton playButton, ImageButton streamButton) 
+	 	public StreamMedia(Context  context,TextView textStreamed) 
 	 	{
 	 		this.context = context;
 			this.textStreamed = textStreamed;
-			this.playButton = playButton;
+			
 			
 		}
 		
@@ -163,6 +162,7 @@ public class StreamMedia {
 		    handler.post(updater);
 	    }
 	    
+	    
 	    private void startMediaPlayer() {
 	        try {   
 	        	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
@@ -182,8 +182,7 @@ public class StreamMedia {
 	        	
 	    		// We have pre-loaded enough content and started the MediaPlayer so update the buttons & progress meters.
 		    	mediaPlayer.start();
-		    	startPlayProgressUpdater();        	
-				playButton.setEnabled(true);
+				
 	        } catch (IOException e) {
 	        	Log.e(getClass().getName(), "Error initializing the MediaPlayer.", e);
 	        	return;
@@ -282,20 +281,43 @@ public class StreamMedia {
 	    	return mediaPlayer;
 		}
 		
-	    public void startPlayProgressUpdater() {
-
-			if (mediaPlayer.isPlaying()) {
-				Runnable notification = new Runnable() {
-			        public void run() {
-			        	startPlayProgressUpdater();
-					}
-			    };
-			    handler.postDelayed(notification,1000);
-	    	}
-	    }    
 	    
+	    //add
+	    public void pause()
+	    {
+	    	if(mediaPlayer!=null)
+	    	{
+	    		mediaPlayer.pause();
+	    	}
+	    }
+	    
+	    public void stop()
+	    {
+
+	    	if(mediaPlayer!=null)
+	    	{
+	    		mediaPlayer.stop();
+	    	}
+	    	
+	    }
+	    
+	    public void resume()
+	    {
+	    	if(mediaPlayer!=null)
+	    	{
+	    		mediaPlayer.start();
+	    	}
+	    }
+	    
+	    public void reset()
+	    {
+	    	if(mediaPlayer!=null)
+	    	{
+	    		mediaPlayer.seekTo(0);
+	    	}
+	    }
 	    public void interrupt() {
-	    	playButton.setEnabled(false);
+	    	
 	    	isInterrupted = true;
 	    	validateNotInterrupted();
 	    }

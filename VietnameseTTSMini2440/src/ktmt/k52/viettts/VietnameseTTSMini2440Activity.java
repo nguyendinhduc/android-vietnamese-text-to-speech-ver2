@@ -35,7 +35,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	/** Called when the activity is first created. */
 
 	private EditText inputText;
-	private ImageButton btSubmit, btChoose, btPlay, btStop, btExit,btClear,btPause;
+	private ImageButton btSubmit, btChoose, btPlay, btStop, btExit,btClear,btPause,btReset;
 	private ListView listText;
 	private CheckBox cbText;
 	private TextView status;
@@ -63,16 +63,21 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				try {
-					String response = HttpHelp.postPageIsolar(temp);
+					/*String response = HttpHelp.postPageIsolar(temp);
 					status.setText("Requesting to isolar..");
 
 					String audioUrl = HttpHelp.getIsolarAudioUrl(response);
 					status.setText("Getting audio url..");
 
-					String mediaName = mediaName(audioUrl);
+					String mediaName = mediaName(audioUrl);*/
+					
+					//isolor die,test zing
+				String	audioUrl ="http://dl2.mp3.zdn.vn/fsdd1131lwwjA/99b8288cc8f1f33c3bc7eaa161d5a310/4f4b0dd0/2012/02/14/7/4/74f1feb7592ecf8ff5983a98505a1b92.mp3?filename=Mua%20Yeu%20Dau%20-%20Dinh%20Manh%20Ninh.mp3";
+				String	mediaName ="test.mp3";
+				audioStreamer = new StreamMedia(VietnameseTTSMini2440Activity.this, status);
 					audioStreamer.startStreaming(audioUrl, mediaName);
 					btSubmit.setEnabled(false);
-
+					
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -84,6 +89,44 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			}
 		});
 
+		btPlay.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				audioStreamer.resume();
+				
+			}
+		});
+		
+
+		btPause.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				audioStreamer.pause();
+				
+			}
+		});
+
+		btStop.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				audioStreamer.stop();
+				
+			}
+		});
+		
+			btReset.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				audioStreamer.reset();
+				
+			}
+		});
+		
+		
 		// nut Exit
 		btExit.setOnClickListener(new OnClickListener() {
 
@@ -177,13 +220,14 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		btExit = (ImageButton) findViewById(R.id.exit);
 		btClear = (ImageButton)findViewById(R.id.clearInput);
 		btPause =(ImageButton)findViewById(R.id.pause);
+		btReset =(ImageButton)findViewById(R.id.reset);
 		
 		listText = (ListView) findViewById(R.id.list);
 		cbText = (CheckBox) findViewById(R.id.Get_text);
 		cbText.setChecked(true);
 		status = (TextView) findViewById(R.id.text_kb_streamed);
 
-		audioStreamer = new StreamMedia(this, status, btPlay, btSubmit);
+		
 
 	}
 
