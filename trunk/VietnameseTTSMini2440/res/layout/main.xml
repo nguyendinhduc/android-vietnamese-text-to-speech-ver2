@@ -135,13 +135,19 @@
              android:paddingLeft="8dp"
           />
         <ImageButton 
+            android:id="@+id/reset"
+           android:layout_width="50dp"
+          android:layout_height="wrap_content"
+          android:src="@drawable/reset"
+             android:paddingLeft="8dp"
+            />
+	 <ImageButton 
             android:id="@+id/stop"
            android:layout_width="50dp"
           android:layout_height="wrap_content"
           android:src="@drawable/stop32"
              android:paddingLeft="8dp"
             />
-
         <ImageButton
             android:id="@+id/exit"
             android:layout_width="50dp"
