@@ -91,7 +91,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 					 */
 
 					// isolor die,test zing
-					String audioUrl = "http://dl3.mp3.zdn.vn/tUtYXLhuDGwX1aWn6/f2568c2de0d2f56881bd283bd8fa1dd4/4f4b0dd0/2012/02/23/9/8/98b7aafdbbfdc0d074838dbe68a268c8.mp3?filename=nhac%20chuong%20-%20anhtun%20.mp3";
+					String audioUrl = "http://dl3.mp3.zdn.vn/tUtYXLhuDGwX1aWn6/1635fe1e50e39d1eb6ed1416357d5e37/4f4c5f50/2011/12/16/d/a/da048ce2f81d6013f287e17919d537a0.mp3?filename=canon%20in%20d-%20nhac%20chuong%20-%20Johann%20Pachelbel.mp3";
 					String mediaName = "test.mp3";
 					audioStreamer = new StreamMedia(
 							VietnameseTTSMini2440Activity.this, status,

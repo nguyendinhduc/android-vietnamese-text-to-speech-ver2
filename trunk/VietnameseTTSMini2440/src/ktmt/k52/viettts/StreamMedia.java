@@ -97,7 +97,7 @@ public class StreamMedia {
 	        	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
 	        }
 	        
-			downloadingMediaFile = new File(Environment.getExternalStorageDirectory()+"/cache",mediaName);
+			downloadingMediaFile = new File(Environment.getExternalStorageDirectory(),mediaName);
 			
 			// Just in case a prior deletion failed because our code crashed or something, we also delete any previously 
 			// downloaded file to ensure we start fresh.  If you use this code, always delete 
@@ -171,7 +171,7 @@ public class StreamMedia {
 	    
 	    private void startMediaPlayer() {
 	        try {   
-	        	File bufferedFile = new File(Environment.getExternalStorageDirectory()+"/cache","playingMedia" + (counter++) + ".dat");
+	        	File bufferedFile = new File(Environment.getExternalStorageDirectory(),"playingMedia" + (counter++) + ".dat");
 	        	
 	        	// We double buffer the data to avoid potential read/write errors that could happen if the 
 	        	// download thread attempted to write at the same time the MediaPlayer was trying to read.
@@ -228,8 +228,8 @@ public class StreamMedia {
 		    	int curPosition = mediaPlayer.getCurrentPosition();
 		    	
 		    	// Copy the currently downloaded content to a new buffered File.  Store the old File for deleting later. 
-		    	File oldBufferedFile = new File(Environment.getExternalStorageDirectory()+"/cache","playingMedia" + counter + ".dat");
-		    	File bufferedFile = new File(Environment.getExternalStorageDirectory()+"/cache","playingMedia" + (counter++) + ".dat");
+		    	File oldBufferedFile = new File(Environment.getExternalStorageDirectory(),"playingMedia" + counter + ".dat");
+		    	File bufferedFile = new File(Environment.getExternalStorageDirectory(),"playingMedia" + (counter++) + ".dat");
 
 		    	//  This may be the last buffered File so ask that it be delete on exit.  If it's already deleted, then this won't mean anything.  If you want to 
 		    	// keep and track fully downloaded files for later use, write caching code and please send me a copy.
