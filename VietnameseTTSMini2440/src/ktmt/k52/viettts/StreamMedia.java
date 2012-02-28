@@ -11,6 +11,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import ktmt.k52.viettts.MediaList.ListMediaAdapter;
+import ktmt.k52.viettts.MediaList.MediaList;
+
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Environment;
@@ -27,8 +30,8 @@ public class StreamMedia {
 
 		private TextView textStreamed;
 		private ImageButton btSumit;
-		private ArrayList<String> arrayWork;
-		private ArrayAdapter<String> arrayAdapter;
+		private ArrayList<MediaList> arrayWork;
+		private ListMediaAdapter arrayAdapter;
 		
 		
 		//  Track for display by progressBar
@@ -48,7 +51,7 @@ public class StreamMedia {
 		
 		private int counter = 0;
 		
-	 	public StreamMedia(Context  context,TextView textStreamed,ArrayList<String> listArrayWork,ArrayAdapter<String> listArrayAdapter,ImageButton mybtSubmit) 
+	 	public StreamMedia(Context  context,TextView textStreamed,ArrayList<MediaList> listArrayWork,ListMediaAdapter listArrayAdapter,ImageButton mybtSubmit) 
 	 	{
 	 		this.context = context;
 			this.textStreamed = textStreamed;
@@ -171,7 +174,7 @@ public class StreamMedia {
 	    
 	    private void startMediaPlayer() {
 	        try {   
-	        	File bufferedFile = new File(Environment.getExternalStorageDirectory(),"playingMedia" + (counter++) + ".dat");
+	        	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
 	        	
 	        	// We double buffer the data to avoid potential read/write errors that could happen if the 
 	        	// download thread attempted to write at the same time the MediaPlayer was trying to read.
@@ -228,8 +231,8 @@ public class StreamMedia {
 		    	int curPosition = mediaPlayer.getCurrentPosition();
 		    	
 		    	// Copy the currently downloaded content to a new buffered File.  Store the old File for deleting later. 
-		    	File oldBufferedFile = new File(Environment.getExternalStorageDirectory(),"playingMedia" + counter + ".dat");
-		    	File bufferedFile = new File(Environment.getExternalStorageDirectory(),"playingMedia" + (counter++) + ".dat");
+		    	File oldBufferedFile = new File(context.getCacheDir(),"playingMedia" + counter + ".dat");
+		    	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
 
 		    	//  This may be the last buffered File so ask that it be delete on exit.  If it's already deleted, then this won't mean anything.  If you want to 
 		    	// keep and track fully downloaded files for later use, write caching code and please send me a copy.
@@ -281,7 +284,9 @@ public class StreamMedia {
 		        	textStreamed.setText(("Audio full loaded: " + totalKbRead + " Kb read"));
 		        	
 		        	btSumit.setEnabled(true);
-		        	arrayWork.add(0,downloadingMediaFile.getAbsolutePath());
+		        	
+		        	MediaList medialist = new MediaList(downloadingMediaFile.getName(), downloadingMediaFile.getAbsolutePath());
+		        	arrayWork.add(medialist);
 		        	arrayAdapter.notifyDataSetChanged();
 		        }
 		    };
