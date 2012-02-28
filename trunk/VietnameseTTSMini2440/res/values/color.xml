@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <resources> 
-    <color name="background_color">#aaaaaa</color> 
+    <color name="background_color">#dddddd</color> 
+    <color name="orange">#FFA500</color>
+     <color name="media_name_color">#666666</color>
+    <color name="media_path_color">#666666</color>
+    <color name="hint_color">#666666</color>
 </resources> 
