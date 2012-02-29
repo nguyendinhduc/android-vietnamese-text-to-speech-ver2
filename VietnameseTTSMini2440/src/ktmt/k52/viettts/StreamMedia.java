@@ -26,16 +26,16 @@ import android.widget.TextView;
 
 public class StreamMedia {
 
-	 private static final int INTIAL_KB_BUFFER =  96*10/8;//assume 96kbps*10secs/8bits per byte
+	 private static final int INTIAL_KB_BUFFER =  16*10/8;//assume 96kbps*10secs/8bits per byte
 
 		private TextView textStreamed;
 		private ImageButton btSumit;
 		private ArrayList<MediaList> arrayWork;
 		private ListMediaAdapter arrayAdapter;
-		
+		private int downloadFileSizeinKB;
 		
 		//  Track for display by progressBar
-		private long mediaLengthInKb;
+		
 		private int totalKbRead = 0;
 		
 		// Create Handler to call View updates on the main UI thread.
@@ -67,14 +67,13 @@ public class StreamMedia {
 	     */  
 	    public void startStreaming(final String mediaUrl,final String mediaName) throws IOException {
 	    	
-	    	//tim file size
-    		URL url = new URL(mediaUrl);
-    		URLConnection urlConnection = url.openConnection();
-    		urlConnection.connect();
-    		int file_size_inkb = urlConnection.getContentLength()/1024;
 	    	
-    		this.mediaLengthInKb = file_size_inkb;
-	    	
+	    	URL url = new URL(mediaUrl);
+			URLConnection urlConnection = url.openConnection();
+			urlConnection.connect();
+			int file_size_inkb = urlConnection.getContentLength() / 1024;
+			this.downloadFileSizeinKB = file_size_inkb;
+			
 			Runnable r = new Runnable() {   
 		        public void run() {   
 		            try {   
@@ -123,8 +122,9 @@ public class StreamMedia {
 	            totalBytesRead += numread;
 	           
 	            totalKbRead = totalBytesRead/1000;
-	            
-	            testMediaBuffer();
+	           
+	            		testMediaBuffer();
+	           
 	           	fireDataLoadUpdate();
 	        } while (validateNotInterrupted());   
 	       		stream.close();
@@ -155,7 +155,7 @@ public class StreamMedia {
 		        public void run() {
 		            if (mediaPlayer == null) {
 		            	//  Only create the MediaPlayer once we have the minimum buffered data
-		            	if ( totalKbRead >= INTIAL_KB_BUFFER) {
+		            	if ( totalKbRead >= INTIAL_KB_BUFFER||totalKbRead==downloadFileSizeinKB) {
 		            		try {
 			            		startMediaPlayer();
 		            		} catch (Exception e) {
@@ -173,6 +173,13 @@ public class StreamMedia {
 		    handler.post(updater);
 	    }
 	    
+	    public void startMediaPlayer(File mediaPath) throws IOException
+	    {
+	    	
+	    	mediaPlayer = createMediaPlayer(mediaPath);
+    		// We have pre-loaded enough content and started the MediaPlayer so update the buttons & progress meters.
+	    	mediaPlayer.start();
+	    }
 	    
 	    private void startMediaPlayer() {
 	        try {   
