@@ -1,8 +1,11 @@
 package ktmt.k52.viettts;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -13,6 +16,7 @@ import ktmt.k52.viettts.MediaList.ListMediaAdapter;
 import ktmt.k52.viettts.MediaList.MediaList;
 
 import org.apache.http.ParseException;
+import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,7 +26,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,15 +33,13 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -68,7 +69,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	ListMediaAdapter arrayAdapter;
 
 	//
-	private MediaPlayer mp;
+
 	private final Handler handler = new Handler();
 
 	@Override
@@ -79,38 +80,57 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		initControl();
 
 		// test
-		inputText.setText("Thử nghiệm tiếng nói");
+		// inputText.setText("Thử nghiệm tiếng nói");
+		inputText
+				.setText("Overwriting this disclaimer and using this demo confirms agreement with the policies and restrictions described below");
 
 		// đặt sự kiện ấn nút submit
 		btSubmit.setOnClickListener(new OnClickListener() {
-			String temp = inputText.getText().toString();
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				String temp = inputText.getText().toString();
+				btSubmit.setEnabled(false);
 				try {
-					/*
-					 * String response = HttpHelp.postPageIsolar(temp);
-					 * status.setText("Requesting to isolar..");
-					 * 
-					 * String audioUrl = HttpHelp.getIsolarAudioUrl(response);
-					 * status.setText("Getting audio url..");
-					 * 
-					 * String mediaName = mediaName(audioUrl);
-					 */
+					HttpHelp http = new HttpHelp();
+					String response = http.postPageVozMe(temp);
+					String audioUrl = http.getVozMeAudioUrl(response).trim();
+					// String audioUrl
+					// ="http://vozme.com/speech/en-ml/ea/ea2f9dd9b723f8bcfe03e2035b72a246.mp3";
+					// String audioUrl =
+					// "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3";
+					String mediaName = audioUrl.substring(
+							audioUrl.lastIndexOf("/") + 1).trim();
+					// String mediaName ="test.mp3";
 
-					// isolor die,test zing
-					String audioUrl = "http://dl3.mp3.zdn.vn/tUtYXLhuDGwX1aWn6/1635fe1e50e39d1eb6ed1416357d5e37/4f4c5f50/2011/12/16/d/a/da048ce2f81d6013f287e17919d537a0.mp3?filename=canon%20in%20d-%20nhac%20chuong%20-%20Johann%20Pachelbel.mp3";
-					String mediaName = "test.mp3";
 					audioStreamer = new StreamMedia(
 							VietnameseTTSMini2440Activity.this, status, array,
 							arrayAdapter, btSubmit);
 					audioStreamer.startStreaming(audioUrl, mediaName);
 
+					// String audioUrl = HttpHelp.getIsolarAudioUrl(response);
+					// status.setText("Getting audio url..");
+
+					// String mediaName = mediaName(audioUrl);
+
+					// isolor die,test zing
+					/*
+					 * String audioUrl =
+					 * "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3"
+					 * ; String mediaName = audioUrl.substring(audioUrl
+					 * .lastIndexOf("/") + 1); audioStreamer = new StreamMedia(
+					 * VietnameseTTSMini2440Activity.this, status, array,
+					 * arrayAdapter, btSubmit);
+					 * audioStreamer.startStreaming(audioUrl, mediaName);
+					 */
+
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -124,9 +144,6 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				if (audioStreamer != null) {
 					audioStreamer.resume();
-				}
-				if (mp != null) {
-					mp.start();
 					primarySeekBarProgressUpdater();
 				}
 
@@ -139,9 +156,6 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				if (audioStreamer != null) {
 					audioStreamer.pause();
-				}
-				if (mp != null) {
-					mp.pause();
 					primarySeekBarProgressUpdater();
 				}
 
@@ -154,9 +168,6 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				if (audioStreamer != null) {
 					audioStreamer.stop();
-				}
-				if (mp != null) {
-					mp.stop();
 					primarySeekBarProgressUpdater();
 				}
 
@@ -169,11 +180,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				if (audioStreamer != null) {
 					audioStreamer.reset();
-				}
-				if (mp != null) {
-					mp.seekTo(0);
+					audioStreamer.resume();
 					primarySeekBarProgressUpdater();
-					mp.start();
 				}
 
 			}
@@ -217,8 +225,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				// the callback via this code
 				startActivityForResult(fileChoose, REQUEST_CODE);
 
-				// Toast.makeText(VietnameseTTSMini2440Activity.this,
-				// fileChooserPath, Toast.LENGTH_SHORT).show();
+				
 
 			}
 		});
@@ -257,66 +264,29 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		});
 
 		// list
-		
-		listText.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View view,
-					int position, long id) {
-				MediaList temp = arrayAdapter.getItem(position);
-				Toast.makeText(VietnameseTTSMini2440Activity.this,
-						temp.getMediaPath(), Toast.LENGTH_SHORT).show();
-				audioPlayer(temp.getMediaPath());
-
-				seekBar.setEnabled(true);
-				seekBar.setMax(mp.getDuration());
-				seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-					@Override
-					public void onStopTrackingTouch(SeekBar seekBar) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void onStartTrackingTouch(SeekBar seekBar) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void onProgressChanged(SeekBar seekBar,
-							int progress, boolean fromUser) {
-						if (fromUser) {
-							mp.seekTo(progress);
-						}
-
-					}
-				});
-				primarySeekBarProgressUpdater();
-				
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		listText.setSelection(0);
 		listText.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view,
 					int position, long id) {
 
+				// LinearLayout temp2
+				// =(LinearLayout)view.findViewById(R.id.layoutChoose);
+
 				MediaList temp = arrayAdapter.getItem(position);
 				Toast.makeText(VietnameseTTSMini2440Activity.this,
 						temp.getMediaPath(), Toast.LENGTH_SHORT).show();
-				audioPlayer(temp.getMediaPath());
+				File file = new File(temp.getMediaPath());
+				try {
+					audioStreamer.startMediaPlayer(file);
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
 
 				seekBar.setEnabled(true);
-				seekBar.setMax(mp.getDuration());
+				seekBar.setMax(audioStreamer.getMediaPlayer().getDuration());
 				seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 					@Override
@@ -335,7 +305,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
 						if (fromUser) {
-							mp.seekTo(progress);
+							audioStreamer.getMediaPlayer().seekTo(progress);
 						}
 
 					}
@@ -368,6 +338,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 		// list
 		listText = (ListView) findViewById(R.id.listfile);
+
+		listText.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		array = new ArrayList<MediaList>();
 		arrayAdapter = new ListMediaAdapter(this, R.layout.custommedialist,
 				array);
@@ -419,127 +391,77 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 	}
 
-	public void audioPlayer(String path) {
-		// set up MediaPlayer
-		if (mp != null) {
-			mp.reset();
-		} else {
-			mp = new MediaPlayer();
-		}
-
-		try {
-
-			mp.setDataSource(path);
-
-		} catch (IllegalArgumentException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		} catch (IllegalStateException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		}
-
-		try {
-
-			mp.prepare();
-
-		} catch (IllegalStateException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-
-		}
-
-		mp.start();
-
-	}
-
 	/**
 	 * Method which updates the SeekBar primary progress by current song playing
 	 * position
 	 */
 	private void primarySeekBarProgressUpdater() {
-		seekBar.setProgress(mp.getCurrentPosition());
-		if (mp.isPlaying()) {
+		seekBar.setProgress(audioStreamer.getMediaPlayer().getCurrentPosition());
+		if (audioStreamer.getMediaPlayer().isPlaying()) {
 			Runnable notification = new Runnable() {
+				@Override
 				public void run() {
 					primarySeekBarProgressUpdater();
 				}
 			};
-			handler.postDelayed(notification, 1000);
+			handler.postDelayed(notification, 100);
 		}
 	}
-	
 
 	// Tạo Option Menu
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, DELETE_WORK, 0, "Xóa").setIcon(
-				android.R.drawable.ic_delete);
+		menu.add(0, DELETE_WORK, 0, "Xóa")
+				.setIcon(android.R.drawable.ic_delete);
 		menu.add(0, ABOUT, 0, "About").setIcon(
 				android.R.drawable.ic_menu_info_details);
 		return true;
 	}
-	// Xử lý sự kiện khi các option trong Option Menu được lựa chọn
-		public boolean onOptionsItemSelected(MenuItem item) {
-			switch (item.getItemId()) {
-			case DELETE_WORK: {
-				deleteCheckedWork();
-				break;
-			}
-			case ABOUT: {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("About");
-				builder.setMessage("Tác giả:" + "\n" + "Nguyễn Trung Dũng" + "\n"
-						+ "Trà n:" + "\n" + "Phí Tùng Lâm");
-				builder.setPositiveButton("đóng",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-							}
-						});
-				builder.setIcon(android.R.drawable.ic_dialog_info);
-				builder.show();
-				break;
-			}
-			}
-			return true;
-		}
 
-		private void deleteCheckedWork() {
-			if (array.size() > 0) {
-				for (int i = 0; i < array.size(); i++) {
-					if (i > array.size()) {
-						break;
-					}
-					if (array.get(i).isChecked()) {
-						MediaList deleteMedia = array.get(i);
-						File deleteFile = new File(deleteMedia.getMediaPath());
-						deleteFile.delete();
-						array.remove(i);
-						arrayAdapter.notifyDataSetChanged();
-						continue;
-					}
+	// Xử lý sự kiện khi các option trong Option Menu được lựa chọn
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case DELETE_WORK: {
+			deleteCheckedWork();
+			break;
+		}
+		case ABOUT: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("About");
+			builder.setMessage("Tác giả:" + "\n" + "Nguyễn Trung Dũng" + "\n"
+					+ "Trà nước:" + "\n" + "Phí Tùng Lâm");
+			builder.setPositiveButton("đóng",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			builder.setIcon(android.R.drawable.ic_dialog_info);
+			builder.show();
+			break;
+		}
+		}
+		return true;
+	}
+
+	private void deleteCheckedWork() {
+		if (array.size() > 0) {
+			for (int i = 0; i < array.size(); i++) {
+				if (i > array.size()) {
+					break;
+				}
+				if (array.get(i).isChecked()) {
+					MediaList deleteMedia = array.get(i);
+					File deleteFile = new File(deleteMedia.getMediaPath());
+					deleteFile.delete();
+					array.remove(i);
+					arrayAdapter.notifyDataSetChanged();
+					continue;
 				}
 			}
 		}
+	}
 
 }
