@@ -44,6 +44,7 @@ public class StreamMedia {
 		private MediaPlayer 	mediaPlayer;
 		
 		private File downloadingMediaFile; 
+		private File fileLocation;
 		
 		private boolean isInterrupted;
 		
@@ -100,7 +101,8 @@ public class StreamMedia {
 	        	Log.e(getClass().getName(), "Unable to create InputStream for mediaUrl:" + mediaUrl);
 	        }
 	        
-			downloadingMediaFile = new File(Environment.getExternalStorageDirectory(),mediaName);
+			fileLocation = new File(Environment.getExternalStorageDirectory(),mediaName);
+			downloadingMediaFile = new File(context.getCacheDir(),"downloadingMedia.dat");
 			
 			// Just in case a prior deletion failed because our code crashed or something, we also delete any previously 
 			// downloaded file to ensure we start fresh.  If you use this code, always delete 
@@ -174,7 +176,7 @@ public class StreamMedia {
 	    
 	    private void startMediaPlayer() {
 	        try {   
-	        	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
+	        //	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
 	        	
 	        	// We double buffer the data to avoid potential read/write errors that could happen if the 
 	        	// download thread attempted to write at the same time the MediaPlayer was trying to read.
@@ -182,16 +184,16 @@ public class StreamMedia {
 	        	// the media is playing.  This would permanently deadlock the file download.  To avoid such a deadloack, 
 	        	// we move the currently loaded data to a temporary buffer file that we start playing while the remaining 
 	        	// data downloads.  
-	        	moveFile(downloadingMediaFile,bufferedFile);
+	        	moveFile(downloadingMediaFile,fileLocation);
 	    		
-	        	Log.e(getClass().getName(),"Buffered File path: " + bufferedFile.getAbsolutePath());
-	        	Log.e(getClass().getName(),"Buffered File length: " + bufferedFile.length()+"");
+	        	Log.e(getClass().getName(),"Buffered File path: " + fileLocation.getAbsolutePath());
+	        	Log.e(getClass().getName(),"Buffered File length: " + fileLocation.length()+"");
 	        	
-	        	mediaPlayer = createMediaPlayer(bufferedFile);
+	        	mediaPlayer = createMediaPlayer(fileLocation);
 	        	
 	    		// We have pre-loaded enough content and started the MediaPlayer so update the buttons & progress meters.
 		    	mediaPlayer.start();
-		    	btSumit.setEnabled(false);
+		    	
 				
 	        } catch (IOException e) {
 	        	Log.e(getClass().getName(), "Error initializing the MediaPlayer.", e);
@@ -216,6 +218,7 @@ public class StreamMedia {
 			FileInputStream fis = new FileInputStream(mediaFile);
 			mPlayer.setDataSource(fis.getFD());
 			mPlayer.prepare();
+			
 			return mPlayer;
 	    }
 	    
@@ -231,12 +234,12 @@ public class StreamMedia {
 		    	int curPosition = mediaPlayer.getCurrentPosition();
 		    	
 		    	// Copy the currently downloaded content to a new buffered File.  Store the old File for deleting later. 
-		    	File oldBufferedFile = new File(context.getCacheDir(),"playingMedia" + counter + ".dat");
+		    	
 		    	File bufferedFile = new File(context.getCacheDir(),"playingMedia" + (counter++) + ".dat");
 
 		    	//  This may be the last buffered File so ask that it be delete on exit.  If it's already deleted, then this won't mean anything.  If you want to 
 		    	// keep and track fully downloaded files for later use, write caching code and please send me a copy.
-		    	bufferedFile.deleteOnExit();   
+		    //	bufferedFile.deleteOnExit();   
 		    	moveFile(downloadingMediaFile,bufferedFile);
 
 		    	// Pause the current player now as we are about to create and start a new one.  So far (Android v1.5),
@@ -256,8 +259,8 @@ public class StreamMedia {
 	        	}
 
 		    	// Lastly delete the previously playing buffered File as it's no longer needed.
-		    	oldBufferedFile.delete();
 		    	
+		    	bufferedFile.delete();
 		    }catch (Exception e) {
 		    	Log.e(getClass().getName(), "Error updating to newly loaded content.", e);            		
 			}
@@ -280,12 +283,12 @@ public class StreamMedia {
 	   	        	transferBufferToMediaPlayer();
 
 	   	        	// Delete the downloaded File as it's now been transferred to the currently playing buffer file.
-	   	        	//downloadingMediaFile.delete();
+	   	        	downloadingMediaFile.delete();
 		        	textStreamed.setText(("Audio full loaded: " + totalKbRead + " Kb read"));
 		        	
 		        	btSumit.setEnabled(true);
 		        	
-		        	MediaList medialist = new MediaList(downloadingMediaFile.getName(), downloadingMediaFile.getAbsolutePath());
+		        	MediaList medialist = new MediaList(fileLocation.getName(), fileLocation.getAbsolutePath());
 		        	arrayWork.add(medialist);
 		        	arrayAdapter.notifyDataSetChanged();
 		        }
