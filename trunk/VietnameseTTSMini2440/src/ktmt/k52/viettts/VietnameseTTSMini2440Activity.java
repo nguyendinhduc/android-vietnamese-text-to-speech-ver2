@@ -80,21 +80,27 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		initControl();
 
 		// test
-		// inputText.setText("Thử nghiệm tiếng nói");
-		inputText
-				.setText("Overwriting this disclaimer and using this demo confirms agreement with the policies and restrictions described below");
+		inputText.setText("Thử nghiệm tiếng nói");
 
 		// đặt sự kiện ấn nút submit
 		btSubmit.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				String temp = inputText.getText().toString();
 				btSubmit.setEnabled(false);
+				String temp = inputText.getText().toString();
+
 				try {
 					HttpHelp http = new HttpHelp();
-					String response = http.postPageVozMe(temp);
-					String audioUrl = http.getVozMeAudioUrl(response).trim();
+					String response = http.postPageIsolar(temp);
+
+					String audioUrl = http.getIsolarAudioUrl(response).trim();
+					/*
+					 * String response = http.postPageVozMe(temp);
+					 * 
+					 * String audioUrl = http.getVozMeAudioUrl(response).trim();
+					 */
+					status.setText("Connecting to server...");
 					// String audioUrl
 					// ="http://vozme.com/speech/en-ml/ea/ea2f9dd9b723f8bcfe03e2035b72a246.mp3";
 					// String audioUrl =
@@ -106,6 +112,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 					audioStreamer = new StreamMedia(
 							VietnameseTTSMini2440Activity.this, status, array,
 							arrayAdapter, btSubmit);
+					status.setText("Start streaming..");
 					audioStreamer.startStreaming(audioUrl, mediaName);
 
 					// String audioUrl = HttpHelp.getIsolarAudioUrl(response);
@@ -224,8 +231,6 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				// Set the request code to any code you like, you can identify
 				// the callback via this code
 				startActivityForResult(fileChoose, REQUEST_CODE);
-
-				
 
 			}
 		});
@@ -448,17 +453,17 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 	private void deleteCheckedWork() {
 		if (array.size() > 0) {
-			for (int i = 0; i < array.size(); i++) {
-				if (i > array.size()) {
-					break;
-				}
+			for (int i = 0; i < array.size();) {
+
 				if (array.get(i).isChecked()) {
 					MediaList deleteMedia = array.get(i);
 					File deleteFile = new File(deleteMedia.getMediaPath());
 					deleteFile.delete();
 					array.remove(i);
 					arrayAdapter.notifyDataSetChanged();
-					continue;
+
+				} else {
+					i++;
 				}
 			}
 		}
