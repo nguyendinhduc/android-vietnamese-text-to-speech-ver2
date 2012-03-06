@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="240dp"
+    android:layout_height="320dp"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="280dp"
+        android:orientation="horizontal" >
+
+         <EditText
+            android:id="@+id/InputZoom"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/background_color"
+            android:gravity="top"
+            android:hint="@string/hint_edittext"
+            android:scrollbars="vertical"
+            android:textSize="15dp" />
+    </LinearLayout>
+ 
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal" >
+  	
+       <ImageButton
+            android:id="@+id/clearInputZoom"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:paddingLeft="8dp"
+            android:src="@drawable/clear2" />
+       
+	
+          <ImageButton
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:paddingLeft="8dp"
+            android:src="@drawable/gobackicon" />
+          
+            <ImageButton
+            android:id="@+id/btReturn"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:paddingLeft="8dp"
+            android:src="@drawable/okicon" />
+        
+    </LinearLayout>
+
+</LinearLayout>
