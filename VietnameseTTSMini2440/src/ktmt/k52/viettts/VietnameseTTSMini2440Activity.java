@@ -1,44 +1,37 @@
 package ktmt.k52.viettts;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 import ktmt.k52.viettts.FileChooser.FileChooser;
 import ktmt.k52.viettts.MediaList.ListMediaAdapter;
 import ktmt.k52.viettts.MediaList.MediaList;
+import ktmt.k52.viettts.inputtextzoom.fileInputZoom;
 
 import org.apache.http.ParseException;
-import org.apache.http.util.ByteArrayBuffer;
-
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -57,6 +50,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	private TextView status;
 
 	private final int REQUEST_CODE = 0;
+	private final int REQUEST_CODE_INPUT_ZOOM = 1;
 	private StreamMedia audioStreamer;
 
 	public static String fileChooserPath;
@@ -91,55 +85,80 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				String temp = inputText.getText().toString();
 
 				try {
-					HttpHelp http = new HttpHelp();
-					String response = http.postPageIsolar(temp);
+					status.setText("Check internet...");
+					Thread.sleep(1000);
+					if (!isOnline()) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								VietnameseTTSMini2440Activity.this);
+						builder.setTitle("Lỗi network");
+						builder.setMessage("Làm ơn hãy kiểm tra lại network");
 
-					String audioUrl = http.getIsolarAudioUrl(response).trim();
-					/*
-					 * String response = http.postPageVozMe(temp);
-					 * 
-					 * String audioUrl = http.getVozMeAudioUrl(response).trim();
-					 */
-					status.setText("Connecting to server...");
-					// String audioUrl
-					// ="http://vozme.com/speech/en-ml/ea/ea2f9dd9b723f8bcfe03e2035b72a246.mp3";
-					// String audioUrl =
-					// "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3";
-					String mediaName = audioUrl.substring(
-							audioUrl.lastIndexOf("/") + 1).trim();
-					// String mediaName ="test.mp3";
+						builder.setPositiveButton("Continue",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
 
-					audioStreamer = new StreamMedia(
-							VietnameseTTSMini2440Activity.this, status, array,
-							arrayAdapter, btSubmit);
-					status.setText("Start streaming..");
-					audioStreamer.startStreaming(audioUrl, mediaName);
+									}
+								});
+						builder.show();
+					} else {
+						HttpHelp http = new HttpHelp();
+						status.setText("Connecting to server...");
+						Thread.sleep(1000);
+						String response = http.postPageIsolar(temp);
+						String audioUrl = http.getIsolarAudioUrl(response)
+								.trim();
+						/*
+						 * String response = http.postPageVozMe(temp);
+						 * 
+						 * String audioUrl =
+						 * http.getVozMeAudioUrl(response).trim();
+						 */
 
-					// String audioUrl = HttpHelp.getIsolarAudioUrl(response);
-					// status.setText("Getting audio url..");
+						// String audioUrl
+						// ="http://vozme.com/speech/en-ml/ea/ea2f9dd9b723f8bcfe03e2035b72a246.mp3";
+						// String audioUrl =
+						// "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3";
+						String mediaName = audioUrl.substring(
+								audioUrl.lastIndexOf("/") + 1).trim();
+						// String mediaName ="test.mp3";
 
-					// String mediaName = mediaName(audioUrl);
+						audioStreamer = new StreamMedia(
+								VietnameseTTSMini2440Activity.this, status,
+								array, arrayAdapter, btSubmit);
+						status.setText("Start streaming..");
+						audioStreamer.startStreaming(audioUrl, mediaName);
 
-					// isolor die,test zing
-					/*
-					 * String audioUrl =
-					 * "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3"
-					 * ; String mediaName = audioUrl.substring(audioUrl
-					 * .lastIndexOf("/") + 1); audioStreamer = new StreamMedia(
-					 * VietnameseTTSMini2440Activity.this, status, array,
-					 * arrayAdapter, btSubmit);
-					 * audioStreamer.startStreaming(audioUrl, mediaName);
-					 */
+						// String audioUrl =
+						// HttpHelp.getIsolarAudioUrl(response);
+						// status.setText("Getting audio url..");
 
+						// String mediaName = mediaName(audioUrl);
+
+						// isolor die,test zing
+						/*
+						 * String audioUrl =
+						 * "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3"
+						 * ; String mediaName = audioUrl.substring(audioUrl
+						 * .lastIndexOf("/") + 1); audioStreamer = new
+						 * StreamMedia( VietnameseTTSMini2440Activity.this,
+						 * status, array, arrayAdapter, btSubmit);
+						 * audioStreamer.startStreaming(audioUrl, mediaName);
+						 */
+					}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Toast.makeText(VietnameseTTSMini2440Activity.this,
+							e.getMessage(), Toast.LENGTH_SHORT).show();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Toast.makeText(VietnameseTTSMini2440Activity.this,
+							e.getMessage(), Toast.LENGTH_SHORT).show();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Toast.makeText(VietnameseTTSMini2440Activity.this,
+							e.getMessage(), Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -256,6 +275,18 @@ public class VietnameseTTSMini2440Activity extends Activity {
 						btChoose.setEnabled(false);
 						inputText.setClickable(true);
 						inputText.setFocusable(true);
+						// tạo intent đề chạy activity file chooser
+						Intent inputTextZoom = new Intent(
+								VietnameseTTSMini2440Activity.this, fileInputZoom.class);
+				        Bundle sendBundle = new Bundle();
+				        sendBundle.putString("textInputComming",inputText.getText().toString());
+
+	                      inputTextZoom.putExtras(sendBundle);
+	                    		  
+
+						// Set the request code to any code you like, you can identify
+						// the callback via this code
+						startActivityForResult(inputTextZoom, REQUEST_CODE_INPUT_ZOOM);
 
 					} else {
 						btChoose.setEnabled(true);
@@ -287,7 +318,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 					audioStreamer.startMediaPlayer(file);
 				} catch (IOException e) {
 
-					e.printStackTrace();
+					Toast.makeText(VietnameseTTSMini2440Activity.this,
+							e.getMessage(), Toast.LENGTH_SHORT).show();
 				}
 
 				seekBar.setEnabled(true);
@@ -320,11 +352,15 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			}
 
 		});
+		
+		
+
 
 	}
 
 	private void initControl() {
 		inputText = (EditText) findViewById(R.id.Input);
+
 		btSubmit = (ImageButton) findViewById(R.id.submit);
 		btChoose = (ImageButton) findViewById(R.id.Choose);
 		btChoose.setEnabled(false);
@@ -338,7 +374,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		seekBar = (SeekBar) findViewById(R.id.seek_bar);
 		seekBar.setEnabled(false);
 		cbText = (CheckBox) findViewById(R.id.Get_text);
-		cbText.setChecked(true);
+		cbText.setChecked(false);
 		status = (TextView) findViewById(R.id.text_kb_streamed);
 
 		// list
@@ -351,13 +387,6 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		// set adapter cho list biet de lay noi dung cua mang arraywork
 		listText.setAdapter(arrayAdapter);
 
-	}
-
-	private String mediaName(String mediaUrl) {
-		int i = mediaUrl.lastIndexOf("/");
-		String mediaName = mediaUrl.substring(i + 1);
-
-		return mediaName;
 	}
 
 	@Override
@@ -387,11 +416,20 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 				} catch (Exception e) {
 
-					System.out.print(e.getMessage());
+					Toast.makeText(VietnameseTTSMini2440Activity.this,
+							e.getMessage(), Toast.LENGTH_SHORT).show();
 
 				}
 
 			}
+		}else if(resultCode == RESULT_OK && requestCode == REQUEST_CODE_INPUT_ZOOM) 
+		{
+			if(data.hasExtra("textInputReturn"))
+		{
+			String temp = data.getExtras().getString("textInputReturn");
+			inputText.setText(temp);
+			cbText.setChecked(false);
+		}
 		}
 
 	}
@@ -467,6 +505,11 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				}
 			}
 		}
+	}
+
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		return cm.getActiveNetworkInfo().isConnectedOrConnecting();
 	}
 
 }
