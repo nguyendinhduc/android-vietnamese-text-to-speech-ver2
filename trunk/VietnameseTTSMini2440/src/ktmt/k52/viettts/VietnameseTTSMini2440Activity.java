@@ -12,6 +12,7 @@ import ktmt.k52.viettts.MediaList.MediaList;
 import ktmt.k52.viettts.inputtextzoom.fileInputZoom;
 
 import org.apache.http.ParseException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,7 +23,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -85,8 +85,9 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				String temp = inputText.getText().toString();
 
 				try {
-					status.setText("Check internet...");
-					Thread.sleep(1000);
+
+					status.setText("Checking internet..");
+
 					if (!isOnline()) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								VietnameseTTSMini2440Activity.this);
@@ -104,30 +105,25 @@ public class VietnameseTTSMini2440Activity extends Activity {
 						builder.show();
 					} else {
 						HttpHelp http = new HttpHelp();
-						status.setText("Connecting to server...");
-						Thread.sleep(1000);
-						String response = http.postPageIsolar(temp);
-						String audioUrl = http.getIsolarAudioUrl(response)
-								.trim();
-						/*
-						 * String response = http.postPageVozMe(temp);
-						 * 
-						 * String audioUrl =
-						 * http.getVozMeAudioUrl(response).trim();
-						 */
+						updateText("Connecting to server");
 
-						// String audioUrl
-						// ="http://vozme.com/speech/en-ml/ea/ea2f9dd9b723f8bcfe03e2035b72a246.mp3";
-						// String audioUrl =
-						// "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3";
+						/*
+						 * String response = http.postPageIsolar(temp); String
+						 * audioUrl = http.getIsolarAudioUrl(response) .trim();
+						 */
+						String response = http.postPageVozMe(temp);
+
+						String audioUrl = http.getVozMeAudioUrl(response)
+								.trim();
+
 						String mediaName = audioUrl.substring(
 								audioUrl.lastIndexOf("/") + 1).trim();
-						// String mediaName ="test.mp3";
 
 						audioStreamer = new StreamMedia(
 								VietnameseTTSMini2440Activity.this, status,
 								array, arrayAdapter, btSubmit);
-						status.setText("Start streaming..");
+
+						updateText("Start Streaming");
 						audioStreamer.startStreaming(audioUrl, mediaName);
 
 						// String audioUrl =
@@ -194,7 +190,9 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				if (audioStreamer != null) {
 					audioStreamer.stop();
-					primarySeekBarProgressUpdater();
+					seekBar.setProgress(0);
+					seekBar.setEnabled(false);
+					// primarySeekBarProgressUpdater();
 				}
 
 			}
@@ -229,6 +227,16 @@ public class VietnameseTTSMini2440Activity extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
+										//Xoa cac file am thanh trong list neu co
+											if(array.size()!=0)
+											{
+											for (MediaList media : array) {
+												File deleteFile = new File(media.getMediaPath());
+												deleteFile.delete();
+											}
+											array.clear();
+											}
+										
 										// Stop the activity
 										VietnameseTTSMini2440Activity.this
 												.finish();
@@ -277,23 +285,25 @@ public class VietnameseTTSMini2440Activity extends Activity {
 						inputText.setFocusable(true);
 						// tạo intent đề chạy activity file chooser
 						Intent inputTextZoom = new Intent(
-								VietnameseTTSMini2440Activity.this, fileInputZoom.class);
-				        Bundle sendBundle = new Bundle();
-				        sendBundle.putString("textInputComming",inputText.getText().toString());
+								VietnameseTTSMini2440Activity.this,
+								fileInputZoom.class);
+						Bundle sendBundle = new Bundle();
+						sendBundle.putString("textInputComming", inputText
+								.getText().toString());
 
-	                      inputTextZoom.putExtras(sendBundle);
-	                    		  
+						inputTextZoom.putExtras(sendBundle);
 
-						// Set the request code to any code you like, you can identify
+						// Set the request code to any code you like, you can
+						// identify
 						// the callback via this code
-						startActivityForResult(inputTextZoom, REQUEST_CODE_INPUT_ZOOM);
+						startActivityForResult(inputTextZoom,
+								REQUEST_CODE_INPUT_ZOOM);
 
 					} else {
 						btChoose.setEnabled(true);
 						inputText.setClickable(false);
 						inputText.setFocusable(false);
 					}
-
 				}
 
 			}
@@ -352,18 +362,15 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			}
 
 		});
-		
-		
-
 
 	}
 
 	private void initControl() {
 		inputText = (EditText) findViewById(R.id.Input);
-
+		inputText.setEnabled(false);
 		btSubmit = (ImageButton) findViewById(R.id.submit);
 		btChoose = (ImageButton) findViewById(R.id.Choose);
-		btChoose.setEnabled(false);
+		// btChoose.setEnabled(false);
 		btPlay = (ImageButton) findViewById(R.id.play);
 		btStop = (ImageButton) findViewById(R.id.stop);
 		btExit = (ImageButton) findViewById(R.id.exit);
@@ -422,14 +429,13 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				}
 
 			}
-		}else if(resultCode == RESULT_OK && requestCode == REQUEST_CODE_INPUT_ZOOM) 
-		{
-			if(data.hasExtra("textInputReturn"))
-		{
-			String temp = data.getExtras().getString("textInputReturn");
-			inputText.setText(temp);
-			cbText.setChecked(false);
-		}
+		} else if (resultCode == RESULT_OK
+				&& requestCode == REQUEST_CODE_INPUT_ZOOM) {
+			if (data.hasExtra("textInputReturn")) {
+				String temp = data.getExtras().getString("textInputReturn");
+				inputText.setText(temp);
+				cbText.setChecked(false);
+			}
 		}
 
 	}
@@ -475,7 +481,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			builder.setTitle("About");
 			builder.setMessage("Tác giả:" + "\n" + "Nguyễn Trung Dũng" + "\n"
 					+ "Trà nước:" + "\n" + "Phí Tùng Lâm");
-			builder.setPositiveButton("đóng",
+			builder.setPositiveButton("Đóng",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -511,5 +517,23 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		return cm.getActiveNetworkInfo().isConnectedOrConnecting();
 	}
+
+	private void updateText(final String text) {
+
+		final Runnable update = new Runnable() {
+			public void run() {
+				// do whatever you want to change here, like:
+				status.setText(text);
+			}
+		};
+		final Handler mHandler = new Handler();
+		mHandler.post(update);
+		// mHandler.postDelayed(update, 15 * 1000);
+
+	}
+
+	
+	
+	
 
 }
