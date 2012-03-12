@@ -42,8 +42,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	/** Called when the activity is first created. */
 
 	private EditText inputText;
-	private ImageButton btSubmit, btChoose, btPlay, btStop, btExit, btClear,
-			btPause, btReset;
+	private ImageButton btSubmit, btDisconnect, btPlay, btStop, btExit,
+			btClear, btPause, btReset;
 	private SeekBar seekBar;
 	private ListView listText;
 	private CheckBox cbText;
@@ -82,13 +82,14 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				btSubmit.setEnabled(false);
+				btDisconnect.setEnabled(true);
 				String temp = inputText.getText().toString();
 
 				try {
 
 					status.setText("Checking internet..");
 
-					if (!isOnline()) {
+					if (!checkInternetConnection()) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								VietnameseTTSMini2440Activity.this);
 						builder.setTitle("Lỗi network");
@@ -103,18 +104,22 @@ public class VietnameseTTSMini2440Activity extends Activity {
 									}
 								});
 						builder.show();
+						btSubmit.setEnabled(true);
+						btDisconnect.setEnabled(false);
 					} else {
 						HttpHelp http = new HttpHelp();
 						updateText("Connecting to server");
 
-						/*
-						 * String response = http.postPageIsolar(temp); String
-						 * audioUrl = http.getIsolarAudioUrl(response) .trim();
-						 */
-						String response = http.postPageVozMe(temp);
-
-						String audioUrl = http.getVozMeAudioUrl(response)
+						String response = http.postPageIsolar(temp);
+						String audioUrl = http.getIsolarAudioUrl(response)
 								.trim();
+
+						/*
+						 * String response = http.postPageVozMe(temp);
+						 * 
+						 * String audioUrl = http.getVozMeAudioUrl(response)
+						 * .trim();
+						 */
 
 						String mediaName = audioUrl.substring(
 								audioUrl.lastIndexOf("/") + 1).trim();
@@ -146,15 +151,15 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					Toast.makeText(VietnameseTTSMini2440Activity.this,
-							e.getMessage(), Toast.LENGTH_SHORT).show();
+							e.toString(), Toast.LENGTH_SHORT).show();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					Toast.makeText(VietnameseTTSMini2440Activity.this,
-							e.getMessage(), Toast.LENGTH_SHORT).show();
+							e.toString(), Toast.LENGTH_SHORT).show();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					Toast.makeText(VietnameseTTSMini2440Activity.this,
-							e.getMessage(), Toast.LENGTH_SHORT).show();
+							e.toString(), Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -227,16 +232,17 @@ public class VietnameseTTSMini2440Activity extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										//Xoa cac file am thanh trong list neu co
-											if(array.size()!=0)
-											{
+										// Xoa cac file am thanh trong list neu
+										// co
+										if (array.size() != 0) {
 											for (MediaList media : array) {
-												File deleteFile = new File(media.getMediaPath());
+												File deleteFile = new File(
+														media.getMediaPath());
 												deleteFile.delete();
 											}
 											array.clear();
-											}
-										
+										}
+
 										// Stop the activity
 										VietnameseTTSMini2440Activity.this
 												.finish();
@@ -248,17 +254,16 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		});
 
 		// nút chooser
-		btChoose.setOnClickListener(new OnClickListener() {
+		btDisconnect.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// tạo intent đề chạy activity file chooser
-				Intent fileChoose = new Intent(
-						VietnameseTTSMini2440Activity.this, FileChooser.class);
-				// Set the request code to any code you like, you can identify
-				// the callback via this code
-				startActivityForResult(fileChoose, REQUEST_CODE);
-
+				btSubmit.setEnabled(true);
+				btDisconnect.setEnabled(false);
+				if(audioStreamer!=null)
+				{
+					audioStreamer.interrupt();
+				}
 			}
 		});
 
@@ -280,7 +285,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 					boolean isChecked) {
 				if (buttonView == cbText) {
 					if (isChecked) {
-						btChoose.setEnabled(false);
+
 						inputText.setClickable(true);
 						inputText.setFocusable(true);
 						// tạo intent đề chạy activity file chooser
@@ -300,7 +305,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 								REQUEST_CODE_INPUT_ZOOM);
 
 					} else {
-						btChoose.setEnabled(true);
+
 						inputText.setClickable(false);
 						inputText.setFocusable(false);
 					}
@@ -329,7 +334,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				} catch (IOException e) {
 
 					Toast.makeText(VietnameseTTSMini2440Activity.this,
-							e.getMessage(), Toast.LENGTH_SHORT).show();
+							e.toString(), Toast.LENGTH_SHORT).show();
 				}
 
 				seekBar.setEnabled(true);
@@ -369,7 +374,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		inputText = (EditText) findViewById(R.id.Input);
 		inputText.setEnabled(false);
 		btSubmit = (ImageButton) findViewById(R.id.submit);
-		btChoose = (ImageButton) findViewById(R.id.Choose);
+		btDisconnect = (ImageButton) findViewById(R.id.disconnect);
+		btDisconnect.setEnabled(false);
 		// btChoose.setEnabled(false);
 		btPlay = (ImageButton) findViewById(R.id.play);
 		btStop = (ImageButton) findViewById(R.id.stop);
@@ -398,39 +404,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-			if (data.hasExtra("filepath")) {
 
-				fileChooserPath = data.getExtras().getString("filepath");
-
-				try {
-					File file = new File(fileChooserPath);
-					FileInputStream fIn = new FileInputStream(file);
-
-					// Read file with UTF-8
-
-					InputStreamReader isr = new InputStreamReader(fIn, "UTF-8");
-
-					char[] inputBuffer = new char[8192];
-
-					isr.read(inputBuffer);
-
-					String readString = new String(inputBuffer);
-
-					// Load content file on ViewText
-
-					inputText.setText(readString);
-
-				} catch (Exception e) {
-
-					Toast.makeText(VietnameseTTSMini2440Activity.this,
-							e.getMessage(), Toast.LENGTH_SHORT).show();
-
-				}
-
-			}
-		} else if (resultCode == RESULT_OK
-				&& requestCode == REQUEST_CODE_INPUT_ZOOM) {
+		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_INPUT_ZOOM) {
 			if (data.hasExtra("textInputReturn")) {
 				String temp = data.getExtras().getString("textInputReturn");
 				inputText.setText(temp);
@@ -513,10 +488,17 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		}
 	}
 
-	public boolean isOnline() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		return cm.getActiveNetworkInfo().isConnectedOrConnecting();
-	}
+	//Check weather Internet connection is available or not
+	public boolean checkInternetConnection() {
+	           final ConnectivityManager conMgr = (ConnectivityManager) getSystemService (Context.CONNECTIVITY_SERVICE);
+	           if (conMgr.getActiveNetworkInfo() != null && conMgr.getActiveNetworkInfo().isAvailable() &&    conMgr.getActiveNetworkInfo().isConnected()) {
+	                 return true;
+	           } else {
+	                 System.out.println("Internet Connection Not Present");
+	               return false;
+	           }
+	        }
+
 
 	private void updateText(final String text) {
 
@@ -531,9 +513,5 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		// mHandler.postDelayed(update, 15 * 1000);
 
 	}
-
-	
-	
-	
 
 }

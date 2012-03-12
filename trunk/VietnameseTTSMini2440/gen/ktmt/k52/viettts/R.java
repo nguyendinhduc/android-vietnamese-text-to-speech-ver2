@@ -23,31 +23,33 @@ public final class R {
         public static final int clear2=0x7f020002;
         public static final int clickable=0x7f020003;
         public static final int closeicon=0x7f020004;
-        public static final int exit=0x7f020005;
-        public static final int folder=0x7f020006;
-        public static final int foldericon=0x7f020007;
-        public static final int gobackicon=0x7f020008;
-        public static final int ic_launcher=0x7f020009;
-        public static final int okicon=0x7f02000a;
-        public static final int pause=0x7f02000b;
-        public static final int play=0x7f02000c;
-        public static final int reset=0x7f02000d;
-        public static final int stop24=0x7f02000e;
-        public static final int stop32=0x7f02000f;
-        public static final int submit=0x7f020010;
+        public static final int disconnecticon=0x7f020005;
+        public static final int exit=0x7f020006;
+        public static final int folder=0x7f020007;
+        public static final int foldericon=0x7f020008;
+        public static final int gobackicon=0x7f020009;
+        public static final int ic_launcher=0x7f02000a;
+        public static final int okicon=0x7f02000b;
+        public static final int pause=0x7f02000c;
+        public static final int play=0x7f02000d;
+        public static final int reset=0x7f02000e;
+        public static final int stop24=0x7f02000f;
+        public static final int stop32=0x7f020010;
+        public static final int submit=0x7f020011;
     }
     public static final class id {
-        public static final int Choose=0x7f060007;
+        public static final int Choose=0x7f060014;
         public static final int Get_text=0x7f060009;
         public static final int Input=0x7f060005;
         public static final int InputZoom=0x7f060012;
         public static final int TextView01=0x7f060003;
         public static final int TextView02=0x7f060004;
-        public static final int back=0x7f060014;
-        public static final int btReturn=0x7f060015;
+        public static final int back=0x7f060015;
+        public static final int btReturn=0x7f060016;
         public static final int check_media=0x7f060000;
         public static final int clearInput=0x7f060008;
         public static final int clearInputZoom=0x7f060013;
+        public static final int disconnect=0x7f060007;
         public static final int exit=0x7f060011;
         public static final int listfile=0x7f06000b;
         public static final int media_name=0x7f060001;
@@ -69,13 +71,16 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f050001;
+        public static final int check_internet=0x7f05000a;
         public static final int checkbox=0x7f050005;
         public static final int choose_button=0x7f050004;
+        public static final int connectingtoserver=0x7f05000b;
         public static final int edittext_kb=0x7f050009;
         public static final int exit_button=0x7f050008;
         public static final int hello=0x7f050000;
         public static final int hint_edittext=0x7f050002;
         public static final int play_button=0x7f050006;
+        public static final int startstreaming=0x7f05000c;
         public static final int stop_button=0x7f050007;
         public static final int submit_button=0x7f050003;
     }
