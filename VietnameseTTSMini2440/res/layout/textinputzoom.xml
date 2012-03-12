@@ -5,7 +5,7 @@
     android:orientation="vertical" >
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="280dp"
+        android:layout_height="230dp"
         android:orientation="horizontal" >
 
          <EditText
@@ -31,7 +31,13 @@
             android:paddingLeft="8dp"
             android:src="@drawable/clear2" />
        
-	
+	 <ImageButton
+            android:id="@+id/Choose"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:paddingLeft="8dp"
+            android:src="@drawable/foldericon" />
+	 
           <ImageButton
             android:id="@+id/back"
             android:layout_width="50dp"
