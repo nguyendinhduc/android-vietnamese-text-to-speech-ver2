@@ -185,9 +185,11 @@ public class HttpHelp {
 	public String postPageIsolar(String data) throws ParseException,
 			IOException {
 
+		
 		data = "voice=male1&SSinput=" + data + "&formSubmit=Submit";
 
-		String url = "http://isolar.vn/social/demo.php";
+		String url = "http://isolar.myftp.org/social/demo.php";
+		String url1="http://isolar.vn/";
 		ret = null;
 
 		httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY,
@@ -205,7 +207,7 @@ public class HttpHelp {
 		httpPost.setHeader("Accept",
 				"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
-		httpPost.setHeader("Host", "isolar.vn");
+		httpPost.setHeader("Host", "isolar.myftp.org");
 		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
 		try {
