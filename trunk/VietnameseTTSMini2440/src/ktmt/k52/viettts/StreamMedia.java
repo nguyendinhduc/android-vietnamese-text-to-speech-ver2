@@ -57,6 +57,14 @@ public class StreamMedia {
 	 * @see ImageButton
 	 */
 	private ImageButton btSumit;
+	
+	/**
+	 * Điều khiển nút Disconnect,khi đang request đến server ->nút này phải ấn được
+	 * và ngược lại khi đã xong thì sẽ không ấn được
+	 * 
+	 * @see ImageButton
+	 */
+	private ImageButton btDisconnect;
 	/**
 	 * Update các file nhạc đã down về và đưa ra danh sách,hỗ trợ cho 
 	 * việc đưa danh sách các file nhạc đã down ra list
@@ -127,6 +135,7 @@ public class StreamMedia {
 	 * @param listArrayWork dùng để cập nhật file mới được down và đưa vào list
 	 * @param listArrayAdapter hỗ trợ cho listArrayWork
 	 * @param mybtSubmit điều khiển nút submit
+	 * @param mybtDisconnect điều khiển nút disconnect
 	 * @see Context
 	 * @see TextView
 	 * @see MediaList
@@ -135,12 +144,13 @@ public class StreamMedia {
 	 */
 	public StreamMedia(Context context, TextView textStreamed,
 			ArrayList<MediaList> listArrayWork,
-			ListMediaAdapter listArrayAdapter, ImageButton mybtSubmit) {
+			ListMediaAdapter listArrayAdapter, ImageButton mybtSubmit,ImageButton mybtDisconnect) {
 		this.context = context;
 		this.textStreamed = textStreamed;
 		this.arrayWork = listArrayWork;
 		this.arrayAdapter = listArrayAdapter;
 		this.btSumit = mybtSubmit;
+		this.btDisconnect = mybtDisconnect;
 
 	}
 
@@ -234,7 +244,7 @@ public class StreamMedia {
 	private boolean validateNotInterrupted() {
 		if (isInterrupted) {
 			if (mediaPlayer != null) {
-				mediaPlayer.pause();
+				mediaPlayer.stop();
 				// mediaPlayer.release();
 			}
 			return false;
@@ -422,7 +432,7 @@ public class StreamMedia {
 						.setText(("Audio full loaded: " + totalKbRead + " Kb read"));
 
 				btSumit.setEnabled(true);
-
+				btDisconnect.setEnabled(false);
 				MediaList medialist = new MediaList(fileLocation.getName(),
 						fileLocation.getAbsolutePath());
 				arrayWork.add(medialist);

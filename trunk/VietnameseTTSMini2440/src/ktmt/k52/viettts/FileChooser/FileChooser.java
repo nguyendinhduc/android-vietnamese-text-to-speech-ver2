@@ -6,22 +6,39 @@ import java.util.Collections;
 import java.util.List;
 
 import ktmt.k52.viettts.R;
-import ktmt.k52.viettts.VietnameseTTSMini2440Activity;
-
-import android.app.Activity;
+import ktmt.k52.viettts.MediaList.MediaList;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
+/**
+ * Class thể hiện list folder và file cho phép người dùng có thể chọn
+ * file bất kỳ,gần giống OpenFileDialog của .NET
+ * @see ListActivity
+ * @author DungNT
+ */
 public class FileChooser extends ListActivity {
 
+	/**
+	 * File hiện tại đang trỏ đến
+	 * @see File
+	 */
 	private File currentDir;
+	/**
+	 * 
+	 */
 	private FileArrayAdapter adapter;
+	/**
+	 * đường dẫn file
+	 */
 	private static String file_path;
 
+	/**
+	 * tạo giao diện ban đầu
+	 * 
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +46,12 @@ public class FileChooser extends ListActivity {
 		fill(currentDir);
 	}
 
+	/**
+	 * Lấy hết file và folder của thư mục hiện tại và đưa vào trong list
+	 * @param f thư mục hiện tại
+	 * @see File
+	 * 
+	 */
 	private void fill(File f) {
 		File[] dirs = f.listFiles();
 		this.setTitle("Current Dir: " + f.getName());
@@ -56,7 +79,17 @@ public class FileChooser extends ListActivity {
 				dir);
 		this.setListAdapter(adapter);
 	}
-
+	
+	/**
+	 * Sự kiện khi ấn vào một phần tử của list
+	 * @param l list hiện tại
+	 * @param v view
+	 * @param position vị trí được ấn vào trong list
+	 * @param id id
+	 * @see ListView
+	 * @see View
+	 * 
+	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO Auto-generated method stub
@@ -70,16 +103,19 @@ public class FileChooser extends ListActivity {
 			onFileClick(o);
 		}
 	}
-
+	/**
+	 * Xử lý khi ấn vào file
+	 * @param o Option được ấn vào
+	 */
 	private void onFileClick(Option o) {
-//		Toast.makeText(this, "File Clicked: " + o.getName(), Toast.LENGTH_SHORT)
-//				.show();
 
 		file_path = o.getPath();
 		finish();
 
 	}
-
+	/**
+	 * Sự kiện kết thúc activity FileChoose
+	 */
 	@Override
 	public void finish() {
 		// Prepare data intent
