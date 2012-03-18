@@ -2,42 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="40dp"
-    android:orientation="horizontal" 
     android:descendantFocusability="blocksDescendants"
-    
-    >
-    
-<CheckBox
-      android:id="@+id/check_media"
-      android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text=""
-         
-      />
-      <LinearLayout
-          android:layout_width="fill_parent"
-          android:layout_height="40dp"
-          android:orientation="vertical"
-       	
-       	
-         
-      >
-          <TextView
-              android:id="@+id/media_name"
-              android:textSize="15px"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:lines="1"
-              android:textColor="@color/media_name_color"
-          />
-          <TextView
-              android:id="@+id/media_path"
-              android:textSize="10px"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:lines="1"
-              android:textColor="@color/media_path_color"
-          />
-      </LinearLayout>
+    android:orientation="horizontal" >
+
+    <CheckBox
+        android:id="@+id/check_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/media_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textColor="@color/media_name_color"
+            android:textSize="15px" />
+
+        <TextView
+            android:id="@+id/media_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textColor="@color/media_path_color"
+            android:textSize="10px" />
+    </LinearLayout>
+
 </LinearLayout>
-    

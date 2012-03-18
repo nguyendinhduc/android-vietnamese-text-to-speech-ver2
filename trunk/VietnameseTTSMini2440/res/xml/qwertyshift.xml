@@ -1,0 +1,95 @@
+
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/qwerty"
+    android:layout_width="240dp"
+    android:layout_height="320dp"
+    android:keyWidth="7.5%p"
+    android:keyHeight="8%p"
+    android:horizontalGap="0px"
+    android:verticalGap="-4px">
+    
+    
+  <!--  <Row>
+    <Key android:codes="1" android:keyLabel="1" android:keyEdgeFlags="left"/>
+        <Key android:codes="2" android:keyLabel="2"/>
+        <Key android:codes="3" android:keyLabel="3"/>
+        <Key android:codes="4" android:keyLabel="4"/>
+        <Key android:codes="5" android:keyLabel="5"/>
+        <Key android:codes="6" android:keyLabel="6"/>
+        <Key android:codes="7" android:keyLabel="7"/>
+        <Key android:codes="8" android:keyLabel="8"/>
+        <Key android:codes="9" android:keyLabel="9"/>
+        <Key android:codes="0" android:keyLabel="0" android:keyEdgeFlags="right"/>
+   </Row> -->
+    <Row>
+        <Key android:codes="111" android:keyLabel="Q" android:keyEdgeFlags="left"/>
+        <Key android:codes="112" android:keyLabel="W"/>
+        <Key android:codes="113" android:keyLabel="E"/>
+        <Key android:codes="114" android:keyLabel="R"/>
+        <Key android:codes="115" android:keyLabel="T"/>
+        <Key android:codes="116" android:keyLabel="Y"/>
+        <Key android:codes="117" android:keyLabel="U"/>
+        <Key android:codes="118" android:keyLabel="I"/>
+        <Key android:codes="119" android:keyLabel="O"/>
+        <Key android:codes="110" android:keyLabel="P" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="121" android:keyLabel="A" android:horizontalGap="3%p"
+                android:keyEdgeFlags="left"/>
+        <Key android:codes="122" android:keyLabel="S"/>
+        <Key android:codes="123" android:keyLabel="D"/>
+        <Key android:codes="124" android:keyLabel="F"/>
+        <Key android:codes="125" android:keyLabel="G"/>
+        <Key android:codes="126" android:keyLabel="H"/>
+        <Key android:codes="127" android:keyLabel="J"/>
+        <Key android:codes="128" android:keyLabel="K"/>
+        <Key android:codes="129" android:keyLabel="L" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="131" android:keyLabel="Z" android:horizontalGap="3%p"
+                android:keyEdgeFlags="left"/>
+        <Key android:codes="132" android:keyLabel="X"/>
+        <Key android:codes="133" android:keyLabel="C"/>
+        <Key android:codes="134" android:keyLabel="V"/>
+        <Key android:codes="135" android:keyLabel="B"/>
+        <Key android:codes="136" android:keyLabel="N"/>
+        <Key android:codes="137" android:keyLabel="M"/>
+        <Key android:codes="-7"
+            android:keyIcon="@drawable/sym_keyboard_delete" 
+                android:keyWidth="15%p" android:keyEdgeFlags="right"
+                android:isRepeatable="true"/>
+    </Row>
+     <Row>
+          <Key android:codes="45"
+            android:keyIcon="@drawable/sym_keyboard_shift" 
+                android:keyWidth="18%p"
+                android:isRepeatable="true" android:keyEdgeFlags="left"/>
+         <Key android:codes="-3" 
+            android:keyIcon="@drawable/sym_keyboard_return" 
+                android:keyWidth="18%p" />
+          <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_space" 
+                android:keyWidth="18%p" />
+        <Key android:codes="-4" android:keyLabel="."
+                android:keyWidth="10%p" />
+        <Key android:codes="-2" android:keyLabel="," android:keyWidth="10%p"  android:keyEdgeFlags="right"/>
+        
+        
+    </Row>
+    
+    <!-- <Row android:rowEdgeFlags="bottom">
+        <Key android:codes="-4" android:keyLabel="."
+                android:keyWidth="10%p" android:horizontalGap="3%p" android:keyEdgeFlags="left"/>
+        <Key android:codes="-2" android:keyLabel="," android:keyWidth="10%p"/>
+        <Key android:codes="-1" android:keyLabel="!"
+                android:keyWidth="15%p" />
+         <Key android:codes="-6" android:keyLabel="\?"
+                android:keyWidth="10%p" android:keyEdgeFlags="right"/>
+      
+    </Row> -->
+   
+
+</Keyboard>
+
+

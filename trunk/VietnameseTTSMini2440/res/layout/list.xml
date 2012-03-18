@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2006 The Android Open Source Project
+<!--
+     Copyright (C) 2006 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -18,11 +19,8 @@
     android:id="@android:id/text1"
     android:layout_width="fill_parent"
     android:layout_height="20dp"
-    android:textAppearance="?android:attr/textAppearanceSmall"
     android:gravity="top"
-   
     android:minHeight="?android:attr/listPreferredItemHeight"
+    android:textAppearance="?android:attr/textAppearanceSmall"
     android:textColor="#000000"
-    android:textColorHighlight="@color/orange"
-   
-/>
+    android:textColorHighlight="@color/orange" />
