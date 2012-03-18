@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+
 /**
  * ListMediaAdapter sẽ được sử dụng thay thế cho ArrayAdapter được bind với
  * ListView. Thông thường ArrayAdapter chỉ cho hiển thị String bằng TextView
