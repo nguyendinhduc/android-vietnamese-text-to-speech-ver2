@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="240dp"
+    android:layout_width="240dp"
     android:layout_height="320dp"
     android:orientation="vertical" >
+
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="230dp"
+        android:layout_height="180dp"
         android:orientation="horizontal" >
 
-         <EditText
+        <EditText
             android:id="@+id/InputZoom"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -18,40 +19,49 @@
             android:scrollbars="vertical"
             android:textSize="15dp" />
     </LinearLayout>
- 
-   <LinearLayout
+    <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboardview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:orientation="horizontal" >
-  	
-       <ImageButton
+
+        <ImageButton
             android:id="@+id/clearInputZoom"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
             android:paddingLeft="8dp"
             android:src="@drawable/clear2" />
-       
-	 <ImageButton
+
+        <ImageButton
             android:id="@+id/Choose"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
             android:paddingLeft="8dp"
             android:src="@drawable/foldericon" />
-	 
-          <ImageButton
+
+        <ImageButton
             android:id="@+id/back"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
             android:paddingLeft="8dp"
             android:src="@drawable/gobackicon" />
-          
-            <ImageButton
+
+        <ImageButton
             android:id="@+id/btReturn"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
             android:paddingLeft="8dp"
             android:src="@drawable/okicon" />
-        
-    </LinearLayout>
 
+    
+    </LinearLayout>
+	
 </LinearLayout>
