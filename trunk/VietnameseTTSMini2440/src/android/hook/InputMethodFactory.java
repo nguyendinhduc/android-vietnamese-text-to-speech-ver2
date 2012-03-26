@@ -1,5 +1,12 @@
-package android.hook;
+﻿package android.hook;
 
+/**
+ * lớp quy định các kiểu gõ thông qua biến đàu vào
+ * dùng để xác định kiểu gõ cho hiển thị trên văn bản
+ * 
+ * @author LamPT
+ *
+ */
 public class InputMethodFactory {
 	 public static InputMethod createInputMethod(InputMethods inputMethod) {
 	        InputMethod im;
