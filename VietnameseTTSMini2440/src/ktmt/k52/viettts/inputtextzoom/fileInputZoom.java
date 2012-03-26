@@ -33,35 +33,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Class dùng để tạo giao diện EditText cho người dùng nhập
- * Tiếng Việt
+ * Class dùng để tạo giao diện EditText cho người dùng nhập Tiếng Việt
+ * 
  * @see Activity
- * @author DungNT
+ * @author DungNT+LamPT
  */
-public class fileInputZoom extends Activity implements OnTouchListener, OnClickListener,
-OnFocusChangeListener,OnKeyListener{
+public class fileInputZoom extends Activity implements OnTouchListener,
+		OnClickListener, OnFocusChangeListener {
 	/**
 	 * Giao diện để người dùng nhập tiếng việt
+	 * 
 	 * @see EditText
 	 */
 	private EditText inputzoom;
 	/**
 	 * Nút ấn để người dùng xóa text
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton clearInput; 
+	private ImageButton clearInput;
 	/**
 	 * Nút ấn để người dùng back lại text lúc đầu
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton goBack; 
+	private ImageButton goBack;
 	/**
 	 * Nút ấn để người dùng trở lại giao diện chính
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton returnHome; 
+	private ImageButton returnHome;
 	/**
 	 * Nút ấn để người dùng chọn text file để hiển thị lên textview
+	 * 
 	 * @see ImageButton
 	 */
 	private ImageButton btChoose;
@@ -75,50 +80,102 @@ OnFocusChangeListener,OnKeyListener{
 	private String backupInput;
 	// Các hằng dùng cho tạo Option Menu
 	/**
-	 * Các hằng dùng cho tạo Option Menu
-	 * Menu OK
+	 * Các hằng dùng cho tạo Option Menu Menu OK
 	 */
 	private static final int OK = Menu.FIRST;
 	/**
-	 * Các hằng dùng cho tạo Option Menu
-	 * Menu Cancel
+	 * Các hằng dùng cho tạo Option Menu Menu Cancel
 	 */
 	private static final int CANCEL = Menu.FIRST + 2;
-	
+
 	/**
 	 * Request code dùng trong tạo activity chọn file text
 	 */
 	protected static final int REQUEST_CODE = 0;
 
-	EditText currentEditText = null;
-	
-	private Button mBSpace, mBdone, mBack, mBChange, mNum;
-	private RelativeLayout mLayout, mKLayout;
+	/**
+	 * cac nút đặc biệt trên bàn phím Space
+	 */
+	private Button mBSpace;
+	/**
+	 * cac nút đặc biệt trên bàn phím Ẩn bàn phím
+	 */
+	private Button mBdone;
+	/**
+	 * cac nút đặc biệt trên bàn phím Nút xóa
+	 */
+	private Button mBack;
+	/**
+	 * cac nút đặc biệt trên bàn phím Shift
+	 */
+	private Button mBChange;
+	/**
+	 * cac nút đặc biệt trên bàn phím Số
+	 */
+	private Button mNum;
+	/**
+	 * keyboard view
+	 */
+	private RelativeLayout mLayout;
+	/**
+	 * Keyboard
+	 */
+	private RelativeLayout mKLayout;
+	/**
+	 * Biến bool trả về true khi edittext đang được edit
+	 */
 	private boolean isEdit = false;
-	private String mUpper = "upper", mLower = "lower";
-	private int w, mWindowWidth;
+	/**
+	 * Viết hoa
+	 */
+	private String mUpper = "upper";
+	/**
+	 * Viết thường
+	 */
+	private String mLower = "lower";
+
+	/**
+	 * độ rọng nút theo màn hình
+	 */
+	private int w;
+	/**
+	 * Độ rộng của màn hình hiển thị
+	 */
+	private int mWindowWidth;
+	/**
+	 * Các phím viết thường
+	 */
 	private String sL[] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 			"k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
 			"x", "y", "z", ".", "]", "[", ":", ";", "," };
+	/**
+	 * Các phím viết hoa
+	 */
 	private String cL[] = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
 			"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W",
 			"X", "Y", "Z", ".", "]", "[", ":", ";", "," };
+	/**
+	 * các kí tự đặc biệt
+	 */
 	private String nS[] = { "!", ")", "'", "#", "3", "$", "%", "&", "8", "*",
 			"?", "/", "+", "-", "9", "0", "1", "4", "@", "5", "7", "(", "2",
 			"\"", "6", "_", ".", "]", "[", "<", ">", "," };
+	/**
+	 * các nút của bàn phím
+	 */
 	private Button mB[] = new Button[32];
-	
+
 	/**
 	 * hàm tạo activity
+	 * 
 	 * @param savedInstanceState
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		//new add
+		// new add
 		// adjusting key regarding window sizes
-	
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.textinputzoom);
 		setKeys();
@@ -126,7 +183,7 @@ OnFocusChangeListener,OnKeyListener{
 		setSrow();
 		setTrow();
 		setForow();
-		
+
 		// init
 		inputzoom = (EditText) findViewById(R.id.InputZoom);
 		inputzoom.setOnTouchListener(this);
@@ -134,8 +191,7 @@ OnFocusChangeListener,OnKeyListener{
 		inputzoom.setOnClickListener(this);
 		mLayout = (RelativeLayout) findViewById(R.id.xK1);
 		mKLayout = (RelativeLayout) findViewById(R.id.xKeyBoard);
-		
-		
+
 		clearInput = (ImageButton) findViewById(R.id.clearInputZoom);
 
 		goBack = (ImageButton) findViewById(R.id.back);
@@ -150,16 +206,16 @@ OnFocusChangeListener,OnKeyListener{
 		inputzoom.setText(backupInput);
 		inputzoom.setCursorVisible(true);
 		inputzoom.setOnKeyListener(new OnKeyListener() {
-			
+
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if(event.getAction()==KeyEvent.ACTION_DOWN){
-					 return VietKeyListenner.setKey(inputzoom, keyCode,event);
-				}		
+				if (event.getAction() == KeyEvent.ACTION_DOWN) {
+					return VietKeyListenner.setKey(inputzoom, keyCode, event);
+				}
 				return false;
 			}
 		});
-		
+
 		// cac su kien nut an
 		clearInput.setOnClickListener(new OnClickListener() {
 
@@ -202,6 +258,7 @@ OnFocusChangeListener,OnKeyListener{
 		});
 
 	}
+
 	/**
 	 * hàm kết thúc activity
 	 */
@@ -217,9 +274,11 @@ OnFocusChangeListener,OnKeyListener{
 	}
 
 	/**
-	 *Hàm tạo Option Menu 
-	 *@param menu Menu cần tạo
-	 *@return true
+	 * Hàm tạo Option Menu
+	 * 
+	 * @param menu
+	 *            Menu cần tạo
+	 * @return true
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,10 +288,12 @@ OnFocusChangeListener,OnKeyListener{
 		return true;
 	}
 
-	// 
+	//
 	/**
 	 * Xử lý sự kiện khi các option trong Option Menu được lựa chọn
-	 * @param item item được chọn trong option menu
+	 * 
+	 * @param item
+	 *            item được chọn trong option menu
 	 * @return true
 	 */
 	@Override
@@ -251,11 +312,16 @@ OnFocusChangeListener,OnKeyListener{
 	}
 
 	/**
-	 *Hàm trả về kết quả khi kết thúc activity chọn file text
-	 *Khi chọn xong file text,sẽ hiển thị text của file lên textview 
-	 *@param requestCode request code mà activity fileinputzoom gửi đến sự kiện chọn file text
-	 *@param resultCode kết quả trả lại từ activity chọn file
-	 *@param data dữ liệu gửi về từ activity chọn file
+	 * Hàm trả về kết quả khi kết thúc activity chọn file text Khi chọn xong
+	 * file text,sẽ hiển thị text của file lên textview
+	 * 
+	 * @param requestCode
+	 *            request code mà activity fileinputzoom gửi đến sự kiện chọn
+	 *            file text
+	 * @param resultCode
+	 *            kết quả trả lại từ activity chọn file
+	 * @param data
+	 *            dữ liệu gửi về từ activity chọn file
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -293,23 +359,16 @@ OnFocusChangeListener,OnKeyListener{
 		}
 
 	}
-	
-	
-	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
+
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
 		if (v == inputzoom && hasFocus == true) {
 			isEdit = true;
-		
 
-		} 
-		
+		}
+
 	}
+
 	@Override
 	public void onClick(View v) {
 		if (v == mBChange) {
@@ -345,8 +404,9 @@ OnFocusChangeListener,OnKeyListener{
 			}
 
 		}
-		
+
 	}
+
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if (v == inputzoom) {
@@ -356,6 +416,14 @@ OnFocusChangeListener,OnKeyListener{
 		}
 		return true;
 	}
+
+	/**
+	 * Hàm nhét text vào view sau khi nhận sự kiện từ bàn phím ảo
+	 * 
+	 * @param v
+	 *            view cần nhập text
+	 * @see View
+	 */
 	private void addText(View v) {
 		if (isEdit == true) {
 			String b = "";
@@ -363,12 +431,19 @@ OnFocusChangeListener,OnKeyListener{
 			if (b != null) {
 				// adding text in Edittext
 				inputzoom.append(b);
-				  VietKeyListenner.setKey3(inputzoom);
+				VietKeyListenner.setKey3(inputzoom);
 
 			}
 		}
-		}
-	
+	}
+
+	/**
+	 * Hàm xử lý khi có sự kiện ấn nút back
+	 * 
+	 * @param v
+	 *            view cần xử lý text
+	 * @see View
+	 */
 	private void isBack(View v) {
 		if (isEdit == true) {
 			CharSequence cc = inputzoom.getText();
@@ -376,25 +451,38 @@ OnFocusChangeListener,OnKeyListener{
 				{
 					inputzoom.setText("");
 					inputzoom.append(cc.subSequence(0, cc.length() - 1));
-					
+
 				}
 
 			}
 		}
 	}
-	
+
+	/**
+	 * hàm xử lý sự kiện khi nhấn nút chuyển từ bàn phím số về bàn phím chữ cái
+	 * xử lý với Text của Button
+	 */
 	private void changeSmallLetters() {
 		mBChange.setVisibility(Button.VISIBLE);
 		for (int i = 0; i < sL.length; i++)
 			mB[i].setText(sL[i]);
 		mNum.setTag("123");
 	}
+
+	/**
+	 * hàm xử lý sự kiện khi nhấn nút chuyển từ bàn phím số về bàn phím chữ cái
+	 * xử lý với tag của Button
+	 */
 	private void changeSmallTags() {
 		for (int i = 0; i < sL.length; i++)
 			mB[i].setTag(sL[i]);
 		mBChange.setTag("lower");
 		mNum.setTag("num");
 	}
+
+	/**
+	 * hàm xử lý sự kiện khi ấn chuyển sang chữ hoa xử lý với text của Button
+	 */
 	private void changeCapitalLetters() {
 		mBChange.setVisibility(Button.VISIBLE);
 		for (int i = 0; i < cL.length; i++)
@@ -404,6 +492,9 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
+	/**
+	 * hàm xử lý sự kiện khi ấn chuyển sang chữ hoa xử lý với tag của Button
+	 */
 	private void changeCapitalTags() {
 		for (int i = 0; i < cL.length; i++)
 			mB[i].setTag(cL[i]);
@@ -411,6 +502,9 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
+	/**
+	 * hàm xử lý sự kiện khi ấn chuyển sang bàn phím số xử lý với Text
+	 */
 	private void changeSyNuLetters() {
 
 		for (int i = 0; i < nS.length; i++)
@@ -418,13 +512,18 @@ OnFocusChangeListener,OnKeyListener{
 		mNum.setText("ABC");
 	}
 
+	/**
+	 * hàm xử lý sự kiện khi ấn chuyển sang bàn phím số xử lý với Tag
+	 */
 	private void changeSyNuTags() {
 		for (int i = 0; i < nS.length; i++)
 			mB[i].setTag(nS[i]);
 		mNum.setTag("ABC");
 	}
 
-	// enabling customized keyboard
+	/**
+	 * hàm hiện custom keyboard
+	 */
 	private void enableKeyboard() {
 
 		mLayout.setVisibility(RelativeLayout.VISIBLE);
@@ -432,19 +531,29 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
-	// Disable customized keyboard
+	/**
+	 * hàm ẩn custom keyboard
+	 */
 	private void disableKeyboard() {
 		mLayout.setVisibility(RelativeLayout.INVISIBLE);
 		mKLayout.setVisibility(RelativeLayout.INVISIBLE);
 
 	}
 
+	/**
+	 * hàm ẩn softkeyboard default của thiết bị tránh trường hợp soft keyboard
+	 * không tương thích
+	 */
 	private void hideDefaultKeyboard() {
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 	}
 
+	/**
+	 * Hàm đặt độ rộng,độ dài các nút của bàn phím theo độ rộng khung màn hình
+	 * hàng thứ nhất
+	 */
 	private void setFrow() {
 		w = (mWindowWidth / 13);
 		w = w - 15;
@@ -471,6 +580,10 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
+	/**
+	 * Hàm đặt độ rộng,độ dài các nút của bàn phím theo độ rộng khung màn hình
+	 * hàng thứ hai
+	 */
 	private void setSrow() {
 		w = (mWindowWidth / 10);
 		mB[0].setWidth(w);
@@ -497,6 +610,10 @@ OnFocusChangeListener,OnKeyListener{
 		mB[26].setHeight(50);
 	}
 
+	/**
+	 * Hàm đặt độ rộng,độ dài các nút của bàn phím theo độ rộng khung màn hình
+	 * hàng thứ ba
+	 */
 	private void setTrow() {
 		w = (mWindowWidth / 12);
 		mB[25].setWidth(w);
@@ -523,6 +640,10 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
+	/**
+	 * Hàm đặt độ rộng,độ dài các nút của bàn phím theo độ rộng khung màn hình
+	 * hàng thứ tư
+	 */
 	private void setForow() {
 		w = (mWindowWidth / 10);
 		mBSpace.setWidth(w * 4);
@@ -540,6 +661,9 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
+	/**
+	 * Map các nút từ file xml vào các Button trong main
+	 */
 	private void setKeys() {
 		mWindowWidth = getWindowManager().getDefaultDisplay().getWidth(); // getting
 		// window
@@ -592,6 +716,4 @@ OnFocusChangeListener,OnKeyListener{
 
 	}
 
-	}
-
-
+}

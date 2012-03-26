@@ -250,12 +250,17 @@
 						android:tag="["
 						android:text="[" 
 						android:padding="0dp" />
-					<Button 
-					    android:soundEffectsEnabled="true" android:id="@+id/xBack"
-						android:layout_width="24dp" android:layout_height="fill_parent"
-						android:textColor="#000" android:textStyle="bold" android:tag="back"
-						android:layout_gravity="center_horizontal|center_vertical|center"
-						android:fitsSystemWindows="true" android:background="@drawable/back_high" />
+
+					<Button
+					    android:id="@+id/xBack"
+					    android:layout_width="24dp"
+					    android:layout_height="24dp"
+					    android:background="@drawable/back_high"
+					    android:tag="back"
+					    android:textColor="#000"
+					    android:textStyle="bold"
+					    android:paddingBottom="2dp" />
+
 				</LinearLayout>
 			</TableRow>
 			<TableRow 
@@ -269,7 +274,7 @@
 					android:orientation="horizontal">
 					<Button 
 					    android:id="@+id/xChange"
-					    android:layout_width="wrap_content" 
+					    android:layout_width="31dp" 
 					    android:layout_height="fill_parent"
 					    android:tag="upper" 
 					    android:background="@drawable/change_high"
@@ -286,7 +291,7 @@
 					    android:id="@+id/xSpace"
 						android:textColor="#000" 
 						android:textStyle="bold"
-						android:layout_width="76dp" 
+						android:layout_width="71dp" 
 						android:layout_height="fill_parent"
 						android:tag=" "
 						/>
@@ -312,7 +317,7 @@
 						android:layout_height="fill_parent"
 						android:textStyle="bold" android:tag="num"
 						android:text="123" android:padding="0dp" />
-					<Button 
+					<Button
 					    android:id="@+id/xDone"
 						android:layout_width="31dp" 
 						android:layout_height="fill_parent"
