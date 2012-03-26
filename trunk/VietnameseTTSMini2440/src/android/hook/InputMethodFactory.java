@@ -8,7 +8,12 @@
  *
  */
 public class InputMethodFactory {
-	 public static InputMethod createInputMethod(InputMethods inputMethod) {
+	 /**
+	 * @param inputMethod là kiều nhập được xác định từ người dùng
+	 * 
+	 * @return phương thức nhập được khởi tạo tương ứng
+	 */
+	public static InputMethod createInputMethod(InputMethods inputMethod) {
 	        InputMethod im;
 	        
 	        if (inputMethod == InputMethods.VNI) {
