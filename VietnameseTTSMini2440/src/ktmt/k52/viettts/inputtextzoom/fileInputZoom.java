@@ -1,35 +1,30 @@
 package ktmt.k52.viettts.inputtextzoom;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 
 import ktmt.k52.viettts.R;
-import ktmt.k52.viettts.VietnameseTTSMini2440Activity;
 import ktmt.k52.viettts.FileChooser.FileChooser;
 import android.app.Activity;
 import android.content.Intent;
 import android.hook.VietKeyListenner;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
-import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -336,17 +331,28 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 
 					// Read file with UTF-8
 
-					InputStreamReader isr = new InputStreamReader(fIn, "UTF-8");
+//					InputStreamReader isr = new InputStreamReader(fIn, "UTF-8");
+//
+//					char[] inputBuffer = new char[8192];
+//
+//					isr.read(inputBuffer);
+//
+//					String readString = new String(inputBuffer);
+					BufferedReader myReader = new BufferedReader(
+							new InputStreamReader(fIn,"UTF-8"));
+					String aDataRow = "";
+					String aBuffer = "";
+					while ((aDataRow = myReader.readLine()) != null) {
+						aBuffer += aDataRow + "\n";
+					}
 
-					char[] inputBuffer = new char[8192];
-
-					isr.read(inputBuffer);
-
-					String readString = new String(inputBuffer);
 
 					// Load content file on ViewText
 
-					inputzoom.setText(readString);
+					inputzoom.setText(aBuffer);
+//					isr.close();
+					myReader.close();
+					fIn.close();
 
 				} catch (Exception e) {
 
@@ -395,7 +401,7 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 			if (nTag.equals("num")) {
 				changeSyNuLetters();
 				changeSyNuTags();
-				mBChange.setVisibility(Button.INVISIBLE);
+				mBChange.setVisibility(View.INVISIBLE);
 
 			}
 			if (nTag.equals("ABC")) {
@@ -463,7 +469,7 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 	 * xử lý với Text của Button
 	 */
 	private void changeSmallLetters() {
-		mBChange.setVisibility(Button.VISIBLE);
+		mBChange.setVisibility(View.VISIBLE);
 		for (int i = 0; i < sL.length; i++)
 			mB[i].setText(sL[i]);
 		mNum.setTag("123");
@@ -484,7 +490,7 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 	 * hàm xử lý sự kiện khi ấn chuyển sang chữ hoa xử lý với text của Button
 	 */
 	private void changeCapitalLetters() {
-		mBChange.setVisibility(Button.VISIBLE);
+		mBChange.setVisibility(View.VISIBLE);
 		for (int i = 0; i < cL.length; i++)
 			mB[i].setText(cL[i]);
 		mBChange.setTag("upper");
@@ -526,8 +532,8 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 	 */
 	private void enableKeyboard() {
 
-		mLayout.setVisibility(RelativeLayout.VISIBLE);
-		mKLayout.setVisibility(RelativeLayout.VISIBLE);
+		mLayout.setVisibility(View.VISIBLE);
+		mKLayout.setVisibility(View.VISIBLE);
 
 	}
 
@@ -535,8 +541,8 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 	 * hàm ẩn custom keyboard
 	 */
 	private void disableKeyboard() {
-		mLayout.setVisibility(RelativeLayout.INVISIBLE);
-		mKLayout.setVisibility(RelativeLayout.INVISIBLE);
+		mLayout.setVisibility(View.INVISIBLE);
+		mKLayout.setVisibility(View.INVISIBLE);
 
 	}
 
