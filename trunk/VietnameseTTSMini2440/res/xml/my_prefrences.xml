@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="Settings">
+	<PreferenceCategory android:title="Kiểu gõ Tiếng Việt">
+	<ListPreference android:title="Kiểu gõ"
+	    	  android:defaultValue="true"
+	    	  android:summary="Chọn kiểu gõ Tiếng Việt"
+	    	  android:key="unikey"
+			android:entries="@array/PreferencesGroupUnikey" android:entryValues="@array/PreferencesGroupUnikeyValues"
+			android:dialogTitle="Chọn kiểu gõ tiếng việt:">
+		</ListPreference>
+		<CheckBoxPreference android:key="vietmode"
+		    android:summary="Bật tắt chế độ gõ tiếng việt"
+			android:title="Viet Mode"></CheckBoxPreference>
+		<CheckBoxPreference android:key="smartmark"
+		    android:summary="Bỏ và thêm dấu ở cuối từ"
+			android:title="Smart Mark"></CheckBoxPreference>
+		<CheckBoxPreference android:key="DiacriticsPosClassic"
+		    android:summary="Gõ dấu kiểu cổ điển"
+			android:title="Diacritics PosClassic"></CheckBoxPreference>
+	</PreferenceCategory>
+
+
+	<PreferenceCategory android:title="Chọn server TTS">
+		<ListPreference android:title="Chọn server "
+		    android:summary="Chọn server"
+		   android:key="server"
+			android:entries="@array/PreferencesGroupServer" android:entryValues="@array/PreferencesGroupServerValues"
+			android:dialogTitle="Chọn server:">
+		</ListPreference>
+	</PreferenceCategory>
+</PreferenceScreen>

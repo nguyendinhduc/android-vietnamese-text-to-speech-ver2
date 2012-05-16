@@ -3,12 +3,39 @@
 
     <string name="hello">Hello World, VietnameseTTSMini2440Activity!</string>
     <string name="app_name">VietnameseTTSMini2440</string>
-	<string name="hint_edittext">Gõ tiếng Việt vào đây..</string>
-	<string name="submit_button">Submit</string>
-	<string name="choose_button">Chọn file</string>
-	<string name="checkbox">Nhập text</string>
-	<string name="play_button">Play</string>
-	<string name="stop_button">Stop</string>
-	<string name="exit_button">Thoát</string>
-	<string name="edittext_kb">Status</string>
+    <string name="hint_edittext">Gõ tiếng Việt vào đây..</string>
+    <string name="submit_button">Submit</string>
+    <string name="choose_button">Chọn file</string>
+    <string name="checkbox">Nhập text</string>
+    <string name="play_button">Play</string>
+    <string name="stop_button">Stop</string>
+    <string name="exit_button">Thoát</string>
+    <string name="edittext_kb">Status</string>
+	<string name="check_internet"> Check internet</string>
+	<string name="connectingtoserver">Connecting to server</string>
+	<string name="startstreaming">Start Streaming</string>
+	<string name="phonewidth">240</string>
+	<string name="phoneheight">320</string>
+	
+	<string-array name="PreferencesGroupUnikey"><item>Telex</item>
+<item>VIQR</item>
+<item>VNI</item>
+<item>Auto</item>
+</string-array>
+
+<string-array name="PreferencesGroupUnikeyValues"><item>Telex</item>
+<item>VIQR</item>
+<item>VNI</item>
+<item>Auto</item>
+</string-array>
+	
+	<string-array name="PreferencesGroupServer"><item>Isolar</item>
+<item>Voz</item>
+<item>Custom</item>
+</string-array>
+
+<string-array name="PreferencesGroupServerValues"><item>Isolar</item>
+<item>Voz</item>
+<item>Custom</item>
+</string-array>
 </resources>

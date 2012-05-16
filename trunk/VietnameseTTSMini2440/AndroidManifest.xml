@@ -24,10 +24,15 @@
             </intent-filter>
         </activity>
        		 <activity android:name=".FileChooser.FileChooser" >
-          
-            
         </activity>
+        
        		 <activity android:name=".inputtextzoom.fileInputZoom"></activity>
+       		 
+       		  <activity android:name=".preferences.PreferencesActivity"
+                  android:label="@string/app_name">
+            
+        </activity> 
+       		 
     </application>
 
 </manifest>
