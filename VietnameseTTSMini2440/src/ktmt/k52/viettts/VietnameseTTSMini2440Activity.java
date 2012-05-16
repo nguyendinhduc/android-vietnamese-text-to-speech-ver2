@@ -7,18 +7,23 @@ import java.util.ArrayList;
 import ktmt.k52.viettts.MediaList.ListMediaAdapter;
 import ktmt.k52.viettts.MediaList.MediaList;
 import ktmt.k52.viettts.inputtextzoom.fileInputZoom;
+import ktmt.k52.viettts.preferences.PreferencesActivity;
 
 import org.apache.http.ParseException;
+
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,76 +40,96 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
 /**
  * Lớp chính,tạo giao diện và xử lý các sự kiện phát sinh
- * @see Activity 
+ * 
+ * @see Activity
  * @author DungNT
  */
 public class VietnameseTTSMini2440Activity extends Activity {
 	/** Called when the activity is first created. */
 
+	public static String UnikeySelected;
+	public static String ServerSelected;
+	public static boolean vietmode = true;
+	public static boolean smartmark = true;
+	public static boolean DiacriticsPosClassic = true;
 	/**
 	 * EditText để nhập tiếng việt
+	 * 
 	 * @see EditText
 	 */
 	private EditText inputText;
 	/**
 	 * Nút để request lên server
+	 * 
 	 * @see ImageButton
 	 */
 	private ImageButton btSubmit;
 	/**
 	 * Nút để ngừng request lên server
+	 * 
 	 * @see ImageButton
 	 */
 	private ImageButton btDisconnect;
 	/**
 	 * Nút để chạy file âm thanh
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton	btPlay;
+	private ImageButton btPlay;
 	/**
 	 * Nút để dừng phát file âm thanh
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton	btStop;
+	private ImageButton btStop;
 	/**
 	 * Nút thoát khỏi chương trình
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton	btExit;
+	private ImageButton btExit;
 	/**
 	 * Nút xóa edittext
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton	btClear;
+	private ImageButton btClear;
 	/**
 	 * Nút tạm dừng phát file âm thanh
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton	btPause;
+	private ImageButton btPause;
 	/**
 	 * Nút để nghe lại file âm thanh từ đầu
+	 * 
 	 * @see ImageButton
 	 */
-	private ImageButton	btReset;
+	private ImageButton btReset;
 	/**
 	 * thanh di chuyển biểu thị tiến trình chạy file âm thanh
+	 * 
 	 * @see SeekBar
 	 */
 	private SeekBar seekBar;
 	/**
 	 * list những file đã được down về thẻ nhớ
+	 * 
 	 * @see ListView
 	 */
 	private ListView listText;
 	/**
 	 * Checkbox để cho phép người dùng nhập tiếng việt
+	 * 
 	 * @see CheckBox
 	 */
 	private CheckBox cbText;
 	/**
 	 * Status hiển thị quá trình request và download file âm thanh
+	 * 
 	 * @see TextView
 	 */
 	private TextView status;
@@ -114,6 +139,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	private final int REQUEST_CODE_INPUT_ZOOM = 1;
 	/**
 	 * phục vụ việc request đến server
+	 * 
 	 * @see StreamMedia
 	 */
 	private StreamMedia audioStreamer;
@@ -123,17 +149,16 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	public static String fileChooserPath;
 
 	/**
-	 * các hằng dùng cho option menu
-	 * menu xóa list
+	 * các hằng dùng cho option menu menu xóa list
 	 */
 	private static final int DELETE_WORK = Menu.FIRST;
 	/**
-	 * các hằng dùng cho option menu
-	 * menu about
+	 * các hằng dùng cho option menu menu about
 	 */
 	private static final int ABOUT = Menu.FIRST + 2;
 	/**
 	 * danh sách các file đã down về
+	 * 
 	 * @see ArrayList
 	 * @see MediaList
 	 */
@@ -143,9 +168,9 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	 */
 	ListMediaAdapter arrayAdapter;
 
-
 	/**
 	 * sử dụng để xử lý khi có nhiều tiến trình cùng sử dụng chung tài nguyên
+	 * 
 	 * @see Handler
 	 */
 	private final Handler handler = new Handler();
@@ -161,8 +186,8 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		initControl();
 
 		// test
-		inputText.setText("Thử nghiệm tiếng nói");
-
+		//inputText.setText("Thử nghiệm tiếng nói");
+		inputText.setText("This is a test");
 		// đặt sự kiện ấn nút submit
 		btSubmit.setOnClickListener(new OnClickListener() {
 
@@ -176,64 +201,59 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 					status.setText("Checking internet..");
 
-					/*if (!isOnline()) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								VietnameseTTSMini2440Activity.this);
-						builder.setTitle("Lỗi network");
-						builder.setMessage("Làm ơn hãy kiểm tra lại network");
-
-						builder.setPositiveButton("Continue",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-									}
-								});
-						builder.show();
-						btSubmit.setEnabled(true);
-						btDisconnect.setEnabled(false);
-					} else */{
+					/*
+					 * if (!isOnline()) { AlertDialog.Builder builder = new
+					 * AlertDialog.Builder( VietnameseTTSMini2440Activity.this);
+					 * builder.setTitle("Lỗi network");
+					 * builder.setMessage("Làm ơn hãy kiểm tra lại network");
+					 * 
+					 * builder.setPositiveButton("Continue", new
+					 * DialogInterface.OnClickListener() {
+					 * 
+					 * @Override public void onClick(DialogInterface dialog, int
+					 * which) {
+					 * 
+					 * } }); builder.show(); btSubmit.setEnabled(true);
+					 * btDisconnect.setEnabled(false); } else
+					 */{
 						HttpHelp http = new HttpHelp();
 						updateText("Connecting to server");
-
-						String response = http.postPageIsolar(temp);
-						String audioUrl = http.getIsolarAudioUrl(response)
-								.trim();
-
-						/*
-						 * String response = http.postPageVozMe(temp);
-						 * 
-						 * String audioUrl = http.getVozMeAudioUrl(response)
-						 * .trim();
-						 */
-
-						String mediaName = audioUrl.substring(
-								audioUrl.lastIndexOf("/") + 1).trim();
+						String response = "";
+						String audioUrl="";
+						String mediaName = "";
+						
+					if(ServerSelected.trim().compareToIgnoreCase("voz")==0)
+					{
+						   response = http.postPageVozMe(temp);
+						  
+						   audioUrl = http.getVozMeAudioUrl(response).trim();
+						   mediaName = audioUrl.substring(
+									audioUrl.lastIndexOf("/") + 1).trim();		 
+					}else if(ServerSelected.trim().compareToIgnoreCase("isolar")==0)
+					{
+						  response = http.postPageIsolar(temp);
+						  
+						   audioUrl = http.getIsolarAudioUrl(response).trim();
+						   mediaName = audioUrl.substring(
+									audioUrl.lastIndexOf("/") + 1).trim();		 	 
+					}else if(ServerSelected.trim().compareToIgnoreCase("custom")==0)
+					{
+						   response = http.postPageIsolar(temp);
+						  
+						   audioUrl = http.getIsolarAudioUrl(response).trim();
+						   mediaName = audioUrl.substring(
+									audioUrl.lastIndexOf("/") + 1).trim();		 
+					}
+						
 
 						audioStreamer = new StreamMedia(
 								VietnameseTTSMini2440Activity.this, status,
-								array, arrayAdapter, btSubmit,btDisconnect);
+								array, arrayAdapter, btSubmit, btDisconnect);
 
 						updateText("Start Streaming");
 						audioStreamer.startStreaming(audioUrl, mediaName);
 
-						// String audioUrl =
-						// HttpHelp.getIsolarAudioUrl(response);
-						// status.setText("Getting audio url..");
-
-						// String mediaName = mediaName(audioUrl);
-
-						// isolor die,test zing
-						/*
-						 * String audioUrl =
-						 * "http://www.downloadtaxi.com/d/1330483872/Baby_ringstone_Justin_Bieber.mp3"
-						 * ; String mediaName = audioUrl.substring(audioUrl
-						 * .lastIndexOf("/") + 1); audioStreamer = new
-						 * StreamMedia( VietnameseTTSMini2440Activity.this,
-						 * status, array, arrayAdapter, btSubmit);
-						 * audioStreamer.startStreaming(audioUrl, mediaName);
-						 */
+						
 					}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
@@ -347,8 +367,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			public void onClick(View v) {
 				btSubmit.setEnabled(true);
 				btDisconnect.setEnabled(false);
-				if(audioStreamer!=null)
-				{
+				if (audioStreamer != null) {
 					audioStreamer.interrupt();
 				}
 			}
@@ -456,6 +475,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		});
 
 	}
+
 	/**
 	 * Hàm khởi tạo các phần tử trên giao diện
 	 */
@@ -490,11 +510,16 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		listText.setAdapter(arrayAdapter);
 
 	}
+
 	/**
 	 * Xử lý khi có kết quả trả về từ activit khác
-	 *@param requestCode request code mà activity main gửi đến sự kiện khác
-	 *@param resultCode kết quả trả lại từ activity khác tới main
-	 *@param data dữ liệu gửi về từ activity khác tới main
+	 * 
+	 * @param requestCode
+	 *            request code mà activity main gửi đến sự kiện khác
+	 * @param resultCode
+	 *            kết quả trả lại từ activity khác tới main
+	 * @param data
+	 *            dữ liệu gửi về từ activity khác tới main
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -527,23 +552,27 @@ public class VietnameseTTSMini2440Activity extends Activity {
 	}
 
 	/**
-	 *Hàm tạo Option Menu 
-	 *@param menu Menu cần tạo
-	 *@return true
+	 * Hàm tạo Option Menu
+	 * 
+	 * @param menu
+	 *            Menu cần tạo
+	 * @return true
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, DELETE_WORK, 0, "Xóa")
 				.setIcon(android.R.drawable.ic_delete);
-		menu.add(0, ABOUT, 0, "About").setIcon(
-				android.R.drawable.ic_menu_info_details);
+		menu.add(0, ABOUT, 0, "Tùy chỉnh").setIcon(
+				android.R.drawable.ic_menu_preferences);
 		return true;
 	}
 
 	/**
 	 * Xử lý sự kiện khi các option trong Option Menu được lựa chọn
-	 * @param item item được chọn trong option menu
+	 * 
+	 * @param item
+	 *            item được chọn trong option menu
 	 * @return true
 	 */
 	@Override
@@ -554,25 +583,30 @@ public class VietnameseTTSMini2440Activity extends Activity {
 			break;
 		}
 		case ABOUT: {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("About");
-			builder.setMessage("Tác giả:" + "\n" + "Nguyễn Trung Dũng" + "\n"
-					+ "Trà nước:" + "\n" + "Phí Tùng Lâm");
-			builder.setPositiveButton("Đóng",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-						}
-					});
-			builder.setIcon(android.R.drawable.ic_dialog_info);
-			builder.show();
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//			builder.setTitle("About");
+//			builder.setMessage("Tác giả:" + "\n" + "Nguyễn Trung Dũng" + "\n"
+//					+ "Trà nước:" + "\n" + "Phí Tùng Lâm");
+//			builder.setPositiveButton("Đóng",
+//					new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface dialog, int which) {
+//						}
+//					});
+//			builder.setIcon(android.R.drawable.ic_dialog_info);
+//			builder.show();
+			Intent settingsActivity = new Intent(getBaseContext(),
+                    PreferencesActivity.class);
+			startActivity(settingsActivity);
 			break;
 		}
 		}
 		return true;
 	}
+
 	/**
-	 * hàm xóa những file được check trong list file cả trong list lần trong thẻ nhớ
+	 * hàm xóa những file được check trong list file cả trong list lần trong thẻ
+	 * nhớ
 	 */
 	private void deleteCheckedWork() {
 		String mediadeleteString = "";
@@ -581,7 +615,7 @@ public class VietnameseTTSMini2440Activity extends Activity {
 
 				if (array.get(i).isChecked()) {
 					MediaList deleteMedia = array.get(i);
-					mediadeleteString+=deleteMedia.getMediaName()+" ";
+					mediadeleteString += deleteMedia.getMediaName() + " ";
 					File deleteFile = new File(deleteMedia.getMediaPath());
 					deleteFile.delete();
 					array.remove(i);
@@ -592,45 +626,43 @@ public class VietnameseTTSMini2440Activity extends Activity {
 				}
 			}
 		}
-		if(mediadeleteString.length()!=0)
-		{
-		AlertDialog.Builder builder = new AlertDialog.Builder(
-				VietnameseTTSMini2440Activity.this);
-		builder.setTitle("Thông báo");
-		builder.setMessage(mediadeleteString+"đã bị xóa.");
+		if (mediadeleteString.length() != 0) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					VietnameseTTSMini2440Activity.this);
+			builder.setTitle("Thông báo");
+			builder.setMessage(mediadeleteString + "đã bị xóa.");
 
-		builder.setPositiveButton("Continue",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
+			builder.setPositiveButton("Continue",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-					}
-				});
-		builder.show();
-	//	mediadeleteString = null;
+						}
+					});
+			builder.show();
+			// mediadeleteString = null;
 		}
 	}
 
 	/**
 	 * Hàm kiểm tra xem thiết bị có được kết nối internet hay không
+	 * 
 	 * @return true nếu có false nếu không
 	 */
 	public boolean isOnline() {
-	    ConnectivityManager cm =
-	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-	        return true;
-	    }
-	    return false;
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
 	}
-
-
 
 	/**
 	 * Hàm cập nhật status
-	 * @param text Dữ liệu cần cập nhật
+	 * 
+	 * @param text
+	 *            Dữ liệu cần cập nhật
 	 */
 	private void updateText(final String text) {
 
@@ -645,6 +677,25 @@ public class VietnameseTTSMini2440Activity extends Activity {
 		mHandler.post(update);
 		// mHandler.postDelayed(update, 15 * 1000);
 
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		 UnikeySelected = preferences.getString(
+			    "unikey",
+			    "default string"
+			);
+		 ServerSelected = preferences.getString(
+			    "server",
+			    "default string"
+			);
+		  vietmode = preferences.getBoolean("vietmode", false);
+		  smartmark = preferences.getBoolean("smartmark", false);
+		  DiacriticsPosClassic = preferences.getBoolean("DiacriticsPosClassic", false);
+		  
 	}
 
 }

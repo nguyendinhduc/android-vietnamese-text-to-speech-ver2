@@ -6,11 +6,17 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 import ktmt.k52.viettts.R;
+import ktmt.k52.viettts.VietnameseTTSMini2440Activity;
 import ktmt.k52.viettts.FileChooser.FileChooser;
+import ktmt.k52.viettts.preferences.PreferencesActivity;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.hook.InputMethod;
+import android.hook.InputMethods;
 import android.hook.VietKeyListenner;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -178,7 +184,8 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 		setSrow();
 		setTrow();
 		setForow();
-
+		
+		referencesUpdate();
 		// init
 		inputzoom = (EditText) findViewById(R.id.InputZoom);
 		inputzoom.setOnTouchListener(this);
@@ -278,8 +285,8 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, OK, 0, "Return").setIcon(R.drawable.okicon);
-		menu.add(0, CANCEL, 0, "Cancel").setIcon(R.drawable.closeicon);
+		menu.add(0, OK, 0, "Quay lại").setIcon(R.drawable.okicon);
+		menu.add(0, CANCEL, 0, "Tùy chỉnh").setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
 	}
 
@@ -300,6 +307,9 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 			break;
 		}
 		case CANCEL: {
+			Intent settingsActivity = new Intent(getBaseContext(),
+                    PreferencesActivity.class);
+			startActivity(settingsActivity);
 			break;
 		}
 		}
@@ -722,4 +732,61 @@ public class fileInputZoom extends Activity implements OnTouchListener,
 
 	}
 
+	public void referencesUpdate()
+	{
+		if(VietnameseTTSMini2440Activity.UnikeySelected.trim().compareToIgnoreCase("telex")==0)
+		{
+		VietKeyListenner.setInputMethod(InputMethods.Telex);
+		}else if(VietnameseTTSMini2440Activity.UnikeySelected.trim().compareToIgnoreCase("VIQR")==0)
+		{
+		VietKeyListenner.setInputMethod(InputMethods.VIQR);
+		}else if(VietnameseTTSMini2440Activity.UnikeySelected.trim().compareToIgnoreCase("VNI")==0)
+		{
+		VietKeyListenner.setInputMethod(InputMethods.VNI);
+		}else if(VietnameseTTSMini2440Activity.UnikeySelected.trim().compareToIgnoreCase("auto")==0)
+		{
+		VietKeyListenner.setInputMethod(InputMethods.Auto);
+		}
+		
+		if(VietnameseTTSMini2440Activity.vietmode){
+			VietKeyListenner.setVietModeEnabled(true);
+		}else
+		{
+			VietKeyListenner.setVietModeEnabled(false);
+		}
+		
+		if(VietnameseTTSMini2440Activity.smartmark){
+			VietKeyListenner.setSmartMark(true);
+		}else{
+			VietKeyListenner.setSmartMark(false);
+		}
+			
+		if(VietnameseTTSMini2440Activity.DiacriticsPosClassic)
+		{
+			VietKeyListenner.setDiacriticsPosClassic(true);
+		}else
+		{
+			VietKeyListenner.setDiacriticsPosClassic(false);
+		}
+		
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		 VietnameseTTSMini2440Activity.UnikeySelected = preferences.getString(
+			    "unikey",
+			    "default string"
+			);
+		 VietnameseTTSMini2440Activity.ServerSelected = preferences.getString(
+			    "server",
+			    "default string"
+			);
+		 VietnameseTTSMini2440Activity.vietmode = preferences.getBoolean("vietmode", false);
+		 VietnameseTTSMini2440Activity.smartmark = preferences.getBoolean("smartmark", false);
+		 VietnameseTTSMini2440Activity.DiacriticsPosClassic = preferences.getBoolean("DiacriticsPosClassic", false);
+		  
+		 referencesUpdate();
+	}
 }
